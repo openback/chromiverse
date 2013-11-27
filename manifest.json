@@ -1,0 +1,19 @@
+{
+	"manifest_version": 2,
+
+	"name": "Thingiverse",
+	"description": "Keep up to date with all things Thingiverse.",
+	"version": "1.0",
+
+	"permissions": [
+		"http://thingiverse.com/",
+		"http://www.thingiverse.com/",
+		"https://thingiverse.com/",
+		"https://www.thingiverse.com/",
+		"https://api.thingiverse.com/"
+		],
+	"browser_action": {
+		"default_icon": "images/icon.png",
+		"default_popup": "index.html"
+	}
+}
