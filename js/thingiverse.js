@@ -1,11 +1,10 @@
-define(['jquery'], function($) {
+define(['jquery', 'config', 'page'], function($, config, page) {
 	var Thingiverse = (function () {
 		"use strict";
 		var self;
-		var	client_secret = '33884214ccf6789d6f68fa7b245f1db8';
-		var	client_id     = '6b2177b42a0eaf4b4d83';
+		var access_token  = null;
 		var	$content      = null;
-		var	me            = {};
+		var	user          = null;
 		var	dashboard     = [];
 		var	likes         = [];
 		var	mades         = [];
@@ -13,6 +12,25 @@ define(['jquery'], function($) {
 		var	collections   = [];
 		var	followers     = [];
 		var	following     = [];
+
+		/**
+		* Gets to an API endpoint
+		* @param path string Endpoint path, including leading slash
+		* @param payload Optional object Data to be sent
+		* @param next function Callback
+		*/
+		var get = function(path, payload, next) {
+			if (typeof payload === 'function') {
+				next = payload;
+				payload = null;
+			}
+
+			$.get(config.api_host.concat(path, '?access_token=', access_token), payload)
+				.done(function (data) { next(data); })
+				.fail(function () { 
+					console.log('Handle this somehow?');
+				});
+		};
 
 		/**
 		* Posts to an API endpoint
@@ -26,7 +44,7 @@ define(['jquery'], function($) {
 				payload = null;
 			}
 
-			$.post('https://api.thingiverse.com' + path, payload)
+			$.post(config.api_host.concat(path, '?access_token=', access_token), payload)
 				.done(function (data) { next(data); })
 				.fail(function () { 
 					console.log('Handle this somehow?');
@@ -51,6 +69,104 @@ define(['jquery'], function($) {
 				$(document).ready(function () {
 					$content = $('#content');
 				});
+
+				// Temporarily seetting this for dev
+				user = {
+					"id":104818,
+					"name":"openback",
+					"full_name":null,
+					"url":"http:\/\/api.thingiverse.dev\/users\/openback",
+					"public_url":"http:\/\/thingiverse.dev\/openback",
+					"thumbnail":"http:\/\/thingiverse.dev\/img\/default\/avatar.jpg",
+					"bio":"",
+					"location":"",
+					"registered":"2013-11-01T14:32:28-04:00",
+					"last_active":"2013-11-27T20:57:25-05:00",
+					"cover_image":{
+						"id":463483,
+						"url":"",
+						"name":"",
+						"sizes":[
+							{
+								"type":"thumb",
+								"size":"large",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"thumb",
+								"size":"medium",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"thumb",
+								"size":"small",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"thumb",
+								"size":"tiny",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"featured",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"card",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"large",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"medium",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"small",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"tiny",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"preview",
+								"size":"tinycard",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"display",
+								"size":"large",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"display",
+								"size":"medium",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							},
+							{
+								"type":"display",
+								"size":"small",
+								"url":"http:\/\/.s3.amazonaws.com\/"
+							}
+						],
+						"added":"2013-11-10T18:29:12-05:00"
+					},
+					"things_url":"http:\/\/api.thingiverse.dev\/users\/openback\/things",
+					"copies_url":"http:\/\/api.thingiverse.dev\/users\/openback\/copies",
+					"likes_url":"http:\/\/api.thingiverse.dev\/users\/openback\/likes",
+					"default_license":"cc-sa",
+					"email":"tim.caraballo+update@makerbot.com"
+				};
+
 			},
 
 			/**
@@ -61,13 +177,22 @@ define(['jquery'], function($) {
 			login: function(username, password) {
 				var data = {
 					'grant_type':'password',
-					'client_id': client_id,
-					'client_secret': client_secret,
+					'client_id': config.client_id,
+					'client_secret': config.client_secret,
 					'username': username,
 					'password': password
 				};
 
-				$.post('https://www.thingiverse.com/login/oauth/access_token', data, function () { self.getMe(self.showMe); });
+				$.post(config.login_url, data)
+					.done(function (response) { 
+						console.log(response);
+						access_token = response.access_token;
+						self.getMe(self.showMe); 
+					})
+					.fail(function () { 
+						page.showError('There was a problem logging in');
+						page.hideLoading();
+					});
 			},
 
 			/* helper functions for retrieving each portion of our data */
@@ -75,12 +200,16 @@ define(['jquery'], function($) {
 				dashboard = [];
 			},
 
-			getMe: function(next) {
-				post('/users/me/', function (data) {
-					me = data;
+			getUser: function(next, force) {
+				if (user == null || force === true) {
+					get('/users/me/', function (data) {
+						user = data;
 
+						if (next) { next(); }
+					});
+				} else {
 					if (next) { next(); }
-				});
+				}
 			},
 
 			getLikes: function(next) {
@@ -95,9 +224,7 @@ define(['jquery'], function($) {
 				post('/users/me/collections', function (data) {
 					collections = data;
 
-					if (next) {
-						next();
-					}
+					if (next) { next(); }
 				});
 			},
 
@@ -105,9 +232,7 @@ define(['jquery'], function($) {
 				post('/users/me/things', function (data) {
 					things = data;
 
-					if (next) {
-						next();
-					}
+					if (next) { next(); }
 				});
 			},
 
@@ -115,33 +240,20 @@ define(['jquery'], function($) {
 				post('/users/me/copies', function (data) {
 					mades = data;
 
-					if (next) {
-						next();
-					}
+					if (next) { next(); }
 				});
 			},
 
 			/* helper functions for showing each page */
-			showMe: function() {
-				console.log('Showing me', me);
+			showUser: function() {
+				self.getUser(function () {
+					page.replaceWithTemplate('profile', user, {variable: 'user'});
+				});
 			},
 
 			showDashboard: function() {
 				console.log('Showing the dashboard', dashboard);
 			}
-
-			// getGetParams: function () {
-			// 	if (!self.__get_params) {
-			// 		self.__get_params = decodeURIComponent(window.location.search.slice(1))
-			// 			.split('&')
-			// 			.reduce(function _reduce (/*Object*/ a, /*String*/ b) {
-			// 				b = b.split('=');
-			// 				a[b[0]] = b[1];
-			// 				return a;
-			// 			}, {});
-			// 	}
-			// 	return self.__get_params;
-			// },
 		};
 
 		return Thingiverse;

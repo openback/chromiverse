@@ -1,36 +1,22 @@
 requirejs.config({
 	baseUrl: 'js',
 	paths: {
+		jquery: 'jquery-2.0.3.min',
+		underscore: 'underscore-min',
 		thingiverse: 'thingiverse',
-		jquery: 'jquery-2.0.3.min'
+		page: 'page',
+		config: 'config'
 	}
 });
 
-require(['jquery', 'thingiverse'], function ($, thingiverse) {
+require(['jquery', 'thingiverse', 'page'], function ($, thingiverse, page) {
 	"use strict";
 
-	var $error;
-	var $loading_screen;
-
-	var showLoading = function() {
-		$loading_screen.addClass('show');
-	}
-
-	var hideLoading = function() {
-		$loading_screen.removeClass('show');
-	}
-
-	var showError = function (message) {
-		$error.html(message).slideDown();
-	};
-
-	var hideError = function () {
-		$error.slideUp();
-	};
-
 	$(document).ready(function () {
-		$error = $('p.error');
-		$loading_screen = $('.loading-screen');
+
+// Temporary for designing
+thingiverse.showUser();
+return;
 
 		$('#sign-in').on('submit', function (e) {
 			e.preventDefault();
@@ -38,12 +24,12 @@ require(['jquery', 'thingiverse'], function ($, thingiverse) {
 			var password = $('#password').val();
 
 			if (!username) {
-				showError('Please enter a username');
+				page.showError('Please enter a username');
 			} else if (!password) {
-				showError('Please enter a password');
+				page.showError('Please enter a password');
 			} else {
-				hideError();
-				showLoading();
+				page.hideError();
+				page.showLoading();
 				thingiverse.login($('#username').val(), $('#password').val());
 			}
 		});
