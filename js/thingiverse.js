@@ -79,7 +79,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					"public_url":"http:\/\/thingiverse.dev\/openback",
 					"thumbnail":"http:\/\/thingiverse.dev\/img\/default\/avatar.jpg",
 					"bio":"",
-					"location":"",
+					"location":"Brooklyn, NY",
 					"registered":"2013-11-01T14:32:28-04:00",
 					"last_active":"2013-11-27T20:57:25-05:00",
 					"cover_image":{
