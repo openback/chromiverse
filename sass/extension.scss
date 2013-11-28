@@ -25,7 +25,7 @@ body {
 	font-family: Arial, sans-serif;
 	font-size: 62.5%;
 	margin: 0 auto;
-	width: 240px;
+	width: 342px;
 }
 
 a {
@@ -126,13 +126,14 @@ p.error {
 }
 
 nav {
-	margin-top: 2em;
+	margin-bottom: 10px;
 	font-size: 0.75em;
 
 	li {
+		background-color: $box-bg;
 		border: 1px solid #ddd;
 		display: inline-block;
-		padding: 0 0.25em;
+		width: 20%;
 
 		+ li {
 			border-left: none;
@@ -140,7 +141,8 @@ nav {
 
 		a {
 			display: block;
-			padding: 4px 1px;
+			padding: 4px 0;
+			text-align: center;
 
 			&:link,
 			&:visited {
@@ -154,13 +156,10 @@ nav {
 	}
 }
 
-.box {
-}
-
 .user-card {
   @include box-shadow(0px 1px 1px rgba(0,0,0,0.25));
-  background-color: #fefefe;
-  border: 1px solid #e9e9eb;
+  background-color: $box-bg;
+  border: 1px solid $border-grey;
   padding: 0 0 10px;
 	position: relative;
 
@@ -173,7 +172,7 @@ nav {
 		@include border-radius(26px);
 		border: 2px solid #fff;
 		height: 50px;
-		left: 5px;
+		left: 20px;
 		overflow: hidden;
 		position: absolute;
 		top: 50px;
@@ -183,7 +182,7 @@ nav {
 	.about {
 		color: $dark-grey;
 		font-size: 0.9em;
-		margin-left: 60px;
+		margin: 5px 0 5px 85px;
 	}
 
 	.username {

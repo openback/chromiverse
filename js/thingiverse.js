@@ -70,7 +70,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					$content = $('#content');
 				});
 
-				// Temporarily seetting this for dev
+				/*
 				user = {
 					"id":104818,
 					"name":"openback",
@@ -91,71 +91,6 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 								"type":"thumb",
 								"size":"large",
 								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"thumb",
-								"size":"medium",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"thumb",
-								"size":"small",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"thumb",
-								"size":"tiny",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"featured",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"card",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"large",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"medium",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"small",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"tiny",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"preview",
-								"size":"tinycard",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"display",
-								"size":"large",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"display",
-								"size":"medium",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							},
-							{
-								"type":"display",
-								"size":"small",
-								"url":"http:\/\/.s3.amazonaws.com\/"
 							}
 						],
 						"added":"2013-11-10T18:29:12-05:00"
@@ -166,7 +101,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					"default_license":"cc-sa",
 					"email":"tim.caraballo+update@makerbot.com"
 				};
-
+				*/
 			},
 
 			/**
@@ -187,7 +122,9 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					.done(function (response) { 
 						console.log(response);
 						access_token = response.access_token;
-						self.getMe(self.showMe); 
+
+						self.registerNav();
+						self.getUser(self.showUser); 
 					})
 					.fail(function () { 
 						page.showError('There was a problem logging in');
@@ -195,9 +132,29 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					});
 			},
 
+			registerNav: function() {
+				$content.on('click', 'nav .profile', function (e) {
+					e.preventDefault();
+					self.showUser();
+				}).on('click', 'nav .dashboard', function (e) {
+					e.preventDefault();
+					self.showDashboard();
+				}).on('click', 'nav .designs', function (e) {
+					e.preventDefault();
+					self.showThings();
+				}).on('click', 'nav .collections', function (e) {
+					e.preventDefault();
+					self.showCollections();
+				}).on('click', 'nav .likes', function (e) {
+					e.preventDefault();
+					self.showLikes();
+				})
+			},
+
 			/* helper functions for retrieving each portion of our data */
-			getDashboard: function() {
+			getDashboard: function(next, force) {
 				dashboard = [];
+				if (next) { next(); }
 			},
 
 			getUser: function(next, force) {
@@ -212,36 +169,52 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				}
 			},
 
-			getLikes: function(next) {
-				post('/users/me/likes', function (data) {
-					likes = data;
+			getLikes: function(next, force) {
+				if (likes == null || force === true) {
+					get('/users/me/likes', function (data) {
+						likes = data;
 
+						if (next) { next(); }
+					});
+				} else {
 					if (next) { next(); }
-				});
+				}
 			},
 
-			getCollections: function(next) {
-				post('/users/me/collections', function (data) {
-					collections = data;
+			getCollections: function(next, force) {
+				if (collections == null || force === true) {
+					get('/users/me/collections', function (data) {
+						collections = data;
 
+						if (next) { next(); }
+					});
+				} else {
 					if (next) { next(); }
-				});
+				}
 			},
 
-			getThings: function(next) {
-				post('/users/me/things', function (data) {
-					things = data;
+			getThings: function(next, force) {
+				if (things == null || force === true) {
+					get('/users/me/things', function (data) {
+						things = data;
 
+						if (next) { next(); }
+					});
+				} else {
 					if (next) { next(); }
-				});
+				}
 			},
 
-			getMade: function(next) {
-				post('/users/me/copies', function (data) {
-					mades = data;
+			getMade: function(next, force) {
+				if (mades == null || force === true) {
+					get('/users/me/copies', function (data) {
+						mades = data;
 
+						if (next) { next(); }
+					});
+				} else {
 					if (next) { next(); }
-				});
+				}
 			},
 
 			/* helper functions for showing each page */
@@ -251,8 +224,39 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				});
 			},
 
+			showLikes: function() {
+				self.getLikes(function () {
+					console.log('Likes', things);
+					page.replaceWithTemplate('things', {'things': likes});
+				});
+			},
+
+			showThings: function() {
+				self.getThings(function () {
+					console.log('THINGS', things);
+					page.replaceWithTemplate('things', {'things': things});
+				});
+			},
+
+			showMade: function() {
+				self.getMade(function () {
+					console.log('MADES', things);
+					page.replaceWithTemplate('things', {'things': mades});
+				});
+			},
+
+			showCollections: function() {
+				self.getCollections(function () {
+					console.log('Collections', collections);
+					page.replaceWithTemplate('collections', {'collections': collections});
+				});
+			},
+
 			showDashboard: function() {
-				console.log('Showing the dashboard', dashboard);
+				self.getCollections(function () {
+					console.log('DASHBOARD', collections);
+					page.replaceWithTemplate('dashboard', {'dashboard': dashboard});
+				});
 			}
 		};
 

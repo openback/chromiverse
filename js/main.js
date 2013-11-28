@@ -15,8 +15,8 @@ require(['jquery', 'thingiverse', 'page'], function ($, thingiverse, page) {
 	$(document).ready(function () {
 
 // Temporary for designing
-thingiverse.showUser();
-return;
+// thingiverse.showUser();
+// return;
 
 		$('#sign-in').on('submit', function (e) {
 			e.preventDefault();

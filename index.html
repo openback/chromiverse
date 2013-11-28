@@ -5,21 +5,26 @@
 		<link rel="stylesheet" href="css/extension.css">
 		<script data-main="js/main.js" src="js/require.js"></script>
 		<script id="profile-template" type="text/template">
+			<nav><ul>
+				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+			</ul></nav>
 			<div class="user-card">
-				<img class="cover_image" src="<%= cover_image.sizes[0].url %>" alt="cover image">
+				<img class="cover_image" src="<% if (cover_image.sizes[0].url.slice(-1) == "/") { %><%= '/images/default/user_cover_00.jpg' %><% } else { %><%= cover_image.sizes[0].url %><% } %>" alt="cover image">
 				<div class="profile-img-wrapper"><img class="avatar" src="<%= thumbnail %>"></div>
 				<div class="about">
 					<h2 class="username"><%= name %></h2>
 					<span class="location"><%= location %></span>
 				</div>
 			</div>
-			<nav><ul>
-				<li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="things">Things</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
-			</ul></nav>
 		</script>
 		<script id="things-template" type="text/template">
-			<div class="box things">
-				<div class="thing thing-interaction-parent" data-thing-id="191646" title="Pocket-Tactics: Saga of the Nine Worlds Core Set">
+			<nav><ul>
+				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+			</ul></nav>
+			<div class="things">
+				<% if (!things.length) { %><p>Sorry, you have no designs!</p><% } %>
+				<% _.each(things, function(thing) { %>
+					<div class="thing thing-interaction-parent" data-thing-id="<%= thing.id %>" title="Pocket-Tactics: Saga of the Nine Worlds Core Set">
 					<div class="row-fluid">
 						<a href="/thing:191646" class="thing-img-wrapper"><img class="thing-img" src="http://thingiverse-production.s3.amazonaws.com/renders/61/77/f3/50/6e/Menvsbrood_preview_card.jpg"></a>
 						<div class="thing-about">
@@ -41,6 +46,33 @@
 						</div>
 					</div>
 				</div>
+				<% }); %>
+			</div>
+		</script>
+		<script id="collections-template" type="text/template">
+			<nav><ul>
+				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+			</ul></nav>
+			<% if (!collections.length) { %><p>Sorry, you have no collections!</p><% } %>
+			<div class="collections">
+				<% _.each(collections, function(collection) { %>
+				<div class="collection">
+					A collection
+				</div>
+				<% }); %>
+			</div>
+		</script>
+		<script id="dashboard-template" type="text/template">
+			<nav><ul>
+				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+			</ul></nav>
+			<% if (!dashboard.length) { %><p>Sorry, your dashboard is empty!</p><% } %>
+			<div class="dashboard">
+				<% _.each(dashboard, function(event) { %>
+				<div class="event">
+					A dashboard event
+				</div>
+				<% }); %>
 			</div>
 		</script>
 	</head>
