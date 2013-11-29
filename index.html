@@ -4,11 +4,19 @@
 		<title>Thingiverse</title>
 		<link rel="stylesheet" href="css/extension.css">
 		<script data-main="js/main.js" src="js/require.js"></script>
+		<script id="login-template" type="text/template">
+			<form id="sign-in">
+				<input type="text" id="username" placeholder="username">
+				<input type="password" id="password" placeholder="password">
+				<input type="submit" value="LOG IN">
+			</form>
+		</script>
 		<script id="profile-template" type="text/template">
 			<nav><ul>
 				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
 			</ul></nav>
 			<div class="user-card">
+				<a href="#" class="logout"> X </a>
 				<img class="cover_image" src="<% if (cover_image.sizes[0].url.slice(-1) == "/") { %><%= '/images/default/user_cover_00.jpg' %><% } else { %><%= cover_image.sizes[0].url %><% } %>" alt="cover image">
 				<div class="profile-img-wrapper"><img class="avatar" src="<%= thumbnail %>"></div>
 				<div class="about">
@@ -82,12 +90,6 @@
 			<img id="logo" src="images/thingiverse-logo.png" alt="Thingiverse">
 			<p class="error none"></p>
 		</header>
-		<section id="content">
-			<form id="sign-in">
-				<input type="text" id="username" placeholder="username">
-				<input type="password" id="password" placeholder="password">
-				<input type="submit" value="LOG IN">
-			</form>
-		</section>
+		<section id="content"></section>
 	</body>
 </html>

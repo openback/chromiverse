@@ -3,6 +3,7 @@ define(['jquery', 'underscore'], function ($, _) {
 		"use strict";
 		var self;
 		var $error;
+		var errorTimeout;
 		var $loading_screen;
 		var $content;
 		var templates = [];
@@ -31,8 +32,18 @@ define(['jquery', 'underscore'], function ($, _) {
 				$loading_screen.removeClass('show');
 			},
 
-			showError: function (message) {
+			showError: function (message, hide_timeout) {
+				if (errorTimeout) {
+					clearTimeout(errorTimeout);
+				}
+
 				$error.stop().html(message).slideDown('fast');
+
+				if (hide_timeout) {
+					errorTimeout = setTimeout(function () {
+						$error.stop().slideUp('slow');
+					}, 4000);
+				}
 			},
 
 			hideError: function () {
@@ -43,15 +54,22 @@ define(['jquery', 'underscore'], function ($, _) {
 			 * Replaces #content with the result of an underscore template
 			 * @param template_id string First part of the template id, minus '-template'
 			 * @param data object Data to pass to the compiled template
-			 * @param settings object Settings to pass to the compiled template
+			 * @param settings object Optional Settings to pass to the compiled template
+			 * @param next function optional Callback
 			 */
-			replaceWithTemplate: function(template_id, data, settings) {
+			replaceWithTemplate: function(template_id, data, settings, next) {
+				if (typeof settings === 'function') {
+					next = settings;
+					settings = null;
+				}
+
 				// Store our compiled templates
 				var compiled = (templates[template_id]) ? 
 					templates[template_id] 
 					: templates[template_id] = _.template($('#' + template_id + '-template').html());
 
 				$content.html(compiled(data, settings));
+				if (typeof next === 'function') { next(); }
 			}
 		};
 

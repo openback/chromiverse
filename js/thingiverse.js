@@ -68,6 +68,23 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 				$(document).ready(function () {
 					$content = $('#content');
+
+					// Login form handler
+					$('#content').on('submit', '#sign-in', function (e) {
+						e.preventDefault();
+						var username = $('#username').val();
+						var password = $('#password').val();
+
+						if (!username) {
+							page.showError('Please enter a username');
+						} else if (!password) {
+							page.showError('Please enter a password');
+						} else {
+							page.hideError();
+							page.showLoading();
+							self.login($('#username').val(), $('#password').val());
+						}
+					});
 				});
 
 				/*
@@ -104,6 +121,29 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				*/
 			},
 
+			defaultView: function (next) {
+				self.getUser(function () {
+					self.showUser(function () {
+						self.registerNav(next);
+					});
+				});
+			},
+
+			/**
+			 * Check if we already have a saved access_token and show the default view if so
+			 */
+			checkLogin: function(next) {
+				chrome.storage.sync.get('access_token', function (items) {
+					if (items.access_token) { // TODO: HOw to check runtime error?
+						// TODO: How to check runtime error?
+						access_token = items.access_token;
+						self.defaultView(next);
+					} else {
+						self.showLogin(next);
+					}
+				});
+			},
+
 			/**
 			* Handles our login and displays our profile page
 			* @param username string
@@ -120,11 +160,8 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 				$.post(config.login_url, data)
 					.done(function (response) { 
-						console.log(response);
 						access_token = response.access_token;
-
-						self.registerNav();
-						self.getUser(self.showUser); 
+						chrome.storage.sync.set({'access_token': access_token}, self.defaultView);
 					})
 					.fail(function () { 
 						page.showError('There was a problem logging in');
@@ -132,29 +169,37 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					});
 			},
 
-			registerNav: function() {
+			registerNav: function(next) {
 				$content.on('click', 'nav .profile', function (e) {
 					e.preventDefault();
-					self.showUser();
+					self.showUser(next);
 				}).on('click', 'nav .dashboard', function (e) {
 					e.preventDefault();
-					self.showDashboard();
+					self.showDashboard(next);
 				}).on('click', 'nav .designs', function (e) {
 					e.preventDefault();
-					self.showThings();
+					self.showThings(next);
 				}).on('click', 'nav .collections', function (e) {
 					e.preventDefault();
-					self.showCollections();
+					self.showCollections(next);
 				}).on('click', 'nav .likes', function (e) {
 					e.preventDefault();
-					self.showLikes();
+					self.showLikes(next);
+				}).on('click', '.logout', function (e) {
+					e.preventDefault();
+					chrome.storage.sync.clear(function () {
+						self.checkLogin(function () {
+							page.showError('You have been logged out', true);
+							if (typeof next === 'function') { next(); }
+						});
+					});
 				})
 			},
 
 			/* helper functions for retrieving each portion of our data */
 			getDashboard: function(next, force) {
 				dashboard = [];
-				if (next) { next(); }
+				if (typeof next === 'function') { next(); }
 			},
 
 			getUser: function(next, force) {
@@ -162,10 +207,10 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					get('/users/me/', function (data) {
 						user = data;
 
-						if (next) { next(); }
+						if (typeof next === 'function') { next(); }
 					});
 				} else {
-					if (next) { next(); }
+					if (typeof next === 'function') { next(); }
 				}
 			},
 
@@ -174,10 +219,10 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					get('/users/me/likes', function (data) {
 						likes = data;
 
-						if (next) { next(); }
+						if (typeof next === 'function') { next(); }
 					});
 				} else {
-					if (next) { next(); }
+					if (typeof next === 'function') { next(); }
 				}
 			},
 
@@ -186,10 +231,10 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					get('/users/me/collections', function (data) {
 						collections = data;
 
-						if (next) { next(); }
+						if (typeof next === 'function') { next(); }
 					});
 				} else {
-					if (next) { next(); }
+					if (typeof next === 'function') { next(); }
 				}
 			},
 
@@ -198,10 +243,10 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					get('/users/me/things', function (data) {
 						things = data;
 
-						if (next) { next(); }
+						if (typeof next === 'function') { next(); }
 					});
 				} else {
-					if (next) { next(); }
+					if (typeof next === 'function') { next(); }
 				}
 			},
 
@@ -210,52 +255,57 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					get('/users/me/copies', function (data) {
 						mades = data;
 
-						if (next) { next(); }
+						if (typeof next === 'function') { next(); }
 					});
 				} else {
-					if (next) { next(); }
+					if (typeof next === 'function') { next(); }
 				}
 			},
 
 			/* helper functions for showing each page */
-			showUser: function() {
+			showLogin: function(next) {
+				page.replaceWithTemplate('login');
+				if (typeof next === 'function') { next(); }
+			},
+
+			showUser: function(next) {
 				self.getUser(function () {
-					page.replaceWithTemplate('profile', user, {variable: 'user'});
+					page.replaceWithTemplate('profile', user, {variable: 'user'}, next);
 				});
 			},
 
-			showLikes: function() {
+			showLikes: function(next) {
 				self.getLikes(function () {
 					console.log('Likes', things);
-					page.replaceWithTemplate('things', {'things': likes});
+					page.replaceWithTemplate('things', {'things': likes}, next);
 				});
 			},
 
-			showThings: function() {
+			showThings: function(next) {
 				self.getThings(function () {
 					console.log('THINGS', things);
-					page.replaceWithTemplate('things', {'things': things});
+					page.replaceWithTemplate('things', {'things': things}, next);
 				});
 			},
 
-			showMade: function() {
+			showMade: function(next) {
 				self.getMade(function () {
 					console.log('MADES', things);
-					page.replaceWithTemplate('things', {'things': mades});
+					page.replaceWithTemplate('things', {'things': mades}, next);
 				});
 			},
 
-			showCollections: function() {
+			showCollections: function(next) {
 				self.getCollections(function () {
 					console.log('Collections', collections);
-					page.replaceWithTemplate('collections', {'collections': collections});
+					page.replaceWithTemplate('collections', {'collections': collections}, next);
 				});
 			},
 
-			showDashboard: function() {
+			showDashboard: function(next) {
 				self.getCollections(function () {
 					console.log('DASHBOARD', collections);
-					page.replaceWithTemplate('dashboard', {'dashboard': dashboard});
+					page.replaceWithTemplate('dashboard', {'dashboard': dashboard}, next);
 				});
 			}
 		};

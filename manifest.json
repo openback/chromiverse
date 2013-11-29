@@ -7,11 +7,12 @@
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
 
 	"permissions": [
-		"http://thingiverse.com/",
-		"http://www.thingiverse.com/",
-		"https://thingiverse.com/",
-		"https://www.thingiverse.com/",
-		"https://api.thingiverse.com/"
+		"storage"
+		// "http://thingiverse.com/",
+		// "http://www.thingiverse.com/",
+		// "https://thingiverse.com/",
+		// "https://www.thingiverse.com/",
+		// "https://api.thingiverse.com/"
 		],
 	"browser_action": {
 		"default_icon": "images/icon.png",
