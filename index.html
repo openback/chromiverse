@@ -42,7 +42,7 @@
 					<div class="details">
 						<span class="name"><%= thing.name %></span>
 						<% if (thing.creator) { %>
-						<span class="name">by <a href="<%= thing.creator.public_url %>"><%= thing.creator.name %></a></span>
+						<span class="creator">by <a href="<%= thing.creator.public_url %>"><%= thing.creator.name %></a></span>
 						<% } %>
 						<a class="thumbnail" href="<%= thing.public_url %>"><img src="<%= thing.thumbnail %>"></a>
 					</div>
@@ -63,7 +63,7 @@
 					<% } %>
 					<div class="details">
 						<span class="name"><%= collection.name %></span>
-						<span class="name">by <a href="<%= collection.creator.public_url %>"><%= collection.creator.name %></a></span>
+						<span class="creator">by <a href="<%= collection.creator.public_url %>"><%= collection.creator.name %></a></span>
 						<a class="thumbnail" href="<%= collection.public_url %>"><img src="<%= collection.thumbnail %>"></a>
 						<% for (var i = 1; i < 3; i++) { if (collection['thumbnail_' + i]) { %>
 						<img class="thumbnail shift-<%= i %>" src="<%= collection['thumbnail_' + i] %>">

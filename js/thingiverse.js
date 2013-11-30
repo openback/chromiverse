@@ -86,39 +86,6 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 						}
 					});
 				});
-
-				/*
-				user = {
-					"id":104818,
-					"name":"openback",
-					"full_name":null,
-					"url":"http:\/\/api.thingiverse.dev\/users\/openback",
-					"public_url":"http:\/\/thingiverse.dev\/openback",
-					"thumbnail":"http:\/\/thingiverse.dev\/img\/default\/avatar.jpg",
-					"bio":"",
-					"location":"Brooklyn, NY",
-					"registered":"2013-11-01T14:32:28-04:00",
-					"last_active":"2013-11-27T20:57:25-05:00",
-					"cover_image":{
-						"id":463483,
-						"url":"",
-						"name":"",
-						"sizes":[
-							{
-								"type":"thumb",
-								"size":"large",
-								"url":"http:\/\/.s3.amazonaws.com\/"
-							}
-						],
-						"added":"2013-11-10T18:29:12-05:00"
-					},
-					"things_url":"http:\/\/api.thingiverse.dev\/users\/openback\/things",
-					"copies_url":"http:\/\/api.thingiverse.dev\/users\/openback\/copies",
-					"likes_url":"http:\/\/api.thingiverse.dev\/users\/openback\/likes",
-					"default_license":"cc-sa",
-					"email":"tim.caraballo+update@makerbot.com"
-				};
-				*/
 			},
 
 			defaultView: function (next) {
