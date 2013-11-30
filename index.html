@@ -11,24 +11,25 @@
 				<input type="submit" value="LOG IN">
 			</form>
 		</script>
-		<script id="profile-template" type="text/template">
+		<script id="nav-template" type="text/template">
 			<nav><ul>
-				<li><a href="#" class="profile active">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+				<% _.each(items, function(item) { %><li><a href="#" class="<%= item.class + ((item.class == active)? ' active': '') %>"><%= item.label %></a></li><% }); %>
 			</ul></nav>
+		</script>
+		<script id="profile-template" type="text/template">
+			<%= nav %>
 			<div class="user-card">
 				<a href="#" class="logout"> X </a>
-				<img class="cover_image" src="<% if (display_small) { %><%= display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
-				<div class="profile-image"><img src="<%= thumbnail %>"></div>
+				<img class="cover_image" src="<% if (user.display_small) { %><%= user.display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
+				<div class="profile-image"><img src="<%= user.thumbnail %>"></div>
 				<div class="about">
-					<h2 class="username"><%= name %></h2>
-					<span class="location"><%= location %></span>
+					<h2 class="username"><%= user.name %></h2>
+					<span class="location"><%= user.location %></span>
 				</div>
 			</div>
 		</script>
 		<script id="things-template" type="text/template">
-			<nav><ul>
-				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
-			</ul></nav>
+			<%= nav %>
 			<div class="things">
 				<% if (!things.length) { %><p>Sorry, you have no designs!</p><% } %>
 				<% _.each(things, function(thing) { %>
@@ -50,9 +51,7 @@
 			</div>
 		</script>
 		<script id="collections-template" type="text/template">
-			<nav><ul>                                                                  
-				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections active">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
-			</ul></nav>
+			<%= nav %>
 			<div class="collections">
 				<% if (!collections.length) { %><p>Sorry, you have no collections!</p><% } %>
 				<% _.each(collections, function(collection) { %>
@@ -75,9 +74,7 @@
 			</div>
 		</script>
 		<script id="dashboard-template" type="text/template">
-			<nav><ul>
-				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard active">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
-			</ul></nav>
+			<%= nav %>
 			<% if (!dashboard || !dashboard.length) { %><p>Sorry, your dashboard is empty!</p><% } %>
 			<div class="dashboard">
 				<% _.each(dashboard, function(event) { %>

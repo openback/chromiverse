@@ -1,4 +1,4 @@
-define(['jquery', 'underscore'], function ($, _) {
+define(['jquery', 'underscore', 'config'], function ($, _, config) {
 	var Page = (function () {
 		"use strict";
 		var self;
@@ -50,6 +50,20 @@ define(['jquery', 'underscore'], function ($, _) {
 				$error.stop().slideUp('fast');
 			},
 
+			getNav: function (active) {
+				// Store our compiled templates
+				var compiled = self.getCompiledTemplate('nav');
+
+				return compiled({'items': config.nav_items, 'active': active});
+			},
+
+			getCompiledTemplate: function(template_id) {
+				// Store our compiled templates
+				return (templates[template_id]) ? 
+					templates[template_id] 
+					: templates[template_id] = _.template($('#' + template_id + '-template').html());
+			},
+
 			/**
 			 * Replaces #content with the result of an underscore template
 			 * @param template_id string First part of the template id, minus '-template'
@@ -63,12 +77,12 @@ define(['jquery', 'underscore'], function ($, _) {
 					settings = null;
 				}
 
-				// Store our compiled templates
-				var compiled = (templates[template_id]) ? 
-					templates[template_id] 
-					: templates[template_id] = _.template($('#' + template_id + '-template').html());
+				data.nav = self.getNav(data.nav);
+
+				var compiled = self.getCompiledTemplate(template_id);
 
 				$content.html(compiled(data, settings));
+
 				if (typeof next === 'function') { next(); }
 			}
 		};

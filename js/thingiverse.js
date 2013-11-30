@@ -269,48 +269,42 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 			/* helper functions for showing each page */
 			showLogin: function(next) {
-				page.replaceWithTemplate('login');
-				if (typeof next === 'function') { next(); }
+				page.replaceWithTemplate('login', null, next);
 			},
 
 			showUser: function(next) {
 				self.getUser(function () {
-					page.replaceWithTemplate('profile', user, {variable: 'user'}, next);
+					page.replaceWithTemplate('profile', {'user':user, 'nav':'profile'}, next);
 				});
 			},
 
 			showLikes: function(next) {
 				self.getLikes(function () {
-					console.log('Likes', likes);
-					page.replaceWithTemplate('things', {'things': likes}, next);
+					page.replaceWithTemplate('things', {'things': likes, 'nav': 'likes'}, next);
 				});
 			},
 
 			showThings: function(next) {
 				self.getThings(function () {
-					console.log('THINGS', things);
-					page.replaceWithTemplate('things', {'things': things}, next);
+					page.replaceWithTemplate('things', {'things': things, 'nav':'designs'}, next);
 				});
 			},
 
 			showMade: function(next) {
 				self.getMade(function () {
-					console.log('MADES', things);
-					page.replaceWithTemplate('things', {'things': mades}, next);
+					page.replaceWithTemplate('things', {'things': mades, 'nav':'mades'}, next);
 				});
 			},
 
 			showCollections: function(next) {
 				self.getCollections(function () {
-					console.log('Collections', collections);
-					page.replaceWithTemplate('collections', {'collections': collections}, next);
+					page.replaceWithTemplate('collections', {'collections': collections, 'nav':'collections'}, next);
 				});
 			},
 
 			showDashboard: function(next) {
 				self.getCollections(function () {
-					console.log('DASHBOARD', collections);
-					page.replaceWithTemplate('dashboard', {'dashboard': dashboard}, next);
+					page.replaceWithTemplate('dashboard', {'dashboard': dashboard, 'nav': 'dashboard'}, next);
 				});
 			}
 		};
