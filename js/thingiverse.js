@@ -5,13 +5,13 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 		var access_token  = null;
 		var	$content      = null;
 		var	user          = null;
-		var	dashboard     = [];
-		var	likes         = [];
-		var	mades         = [];
-		var	things        = [];
-		var	collections   = [];
-		var	followers     = [];
-		var	following     = [];
+		var	dashboard     = null;
+		var	likes         = null;
+		var	mades         = null;
+		var	things        = null;
+		var	collections   = null;
+		var	followers     = null;
+		var	following     = null;
 
 		/**
 		* Gets to an API endpoint
@@ -206,6 +206,11 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				if (user == null || force === true) {
 					get('/users/me/', function (data) {
 						user = data;
+
+						// Make images easier to get at
+						_.each(user.cover_image.sizes, function(image) {
+							user[image.type + '_' + image.size] = image.url;
+						});
 
 						if (typeof next === 'function') { next(); }
 					});

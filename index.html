@@ -17,7 +17,7 @@
 			</ul></nav>
 			<div class="user-card">
 				<a href="#" class="logout"> X </a>
-				<img class="cover_image" src="<% if (cover_image.sizes[0].url.slice(-1) == "/") { %><%= '/images/default/user_cover_00.jpg' %><% } else { %><%= cover_image.sizes[0].url %><% } %>" alt="cover image">
+				<img class="cover_image" src="<% if (display_small) { %><%= display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
 				<div class="profile-img-wrapper"><img class="avatar" src="<%= thumbnail %>"></div>
 				<div class="about">
 					<h2 class="username"><%= name %></h2>
@@ -32,26 +32,27 @@
 			<div class="things">
 				<% if (!things.length) { %><p>Sorry, you have no designs!</p><% } %>
 				<% _.each(things, function(thing) { %>
-					<div class="thing thing-interaction-parent" data-thing-id="<%= thing.id %>" title="Pocket-Tactics: Saga of the Nine Worlds Core Set">
+					<div class="thing thing-interaction-parent" data-thing-id="<%= thing.id %>" title="<%= thing.name %>">
 					<div class="row-fluid">
-						<a href="/thing:191646" class="thing-img-wrapper"><img class="thing-img" src="http://thingiverse-production.s3.amazonaws.com/renders/61/77/f3/50/6e/Menvsbrood_preview_card.jpg"></a>
+						<a href="<%= thing.public_url %>" class="thing-img-wrapper"><img class="thing-img" src="<%= thing.thumbnail %>"></a>
 						<div class="thing-about">
 							<div class="profile-pic">
-								<div class="profile-img-wrapper"><a href="http://www.thingiverse.com/dutchmogul"><img src="http://thingiverse-production.s3.amazonaws.com/renders/25/8b/a7/2f/17/Pete_thumb_tiny.jpg" alt="" class="render"></a></div> 
+								<div class="profile-img-wrapper"><a href="<%= thing.creator.public_url %>"><img src="<%= thing.creator.thumbnail %>" alt="<%= thing.name %>"></a></div> 
 							</div>
 							<span class="thing-who-what">
 								<span class="thing-made">
-									<span class="thing-name">Pocket-Tactics: Saga of the Nine Worlds Core Set</span>
-									<span class="creator-name">by <a href="http://www.thingiverse.com/dutchmogul">dutchmogul</a></span>
+									<span class="thing-name"><%= thing.name %></span>
+									<span class="creator-name">by <a href="<%= thing.creatorpublic_url %>"><%= thing.creator.name %></a></span>
 								</span>						
 							</span>
-							<span class="thing-pub-time">11 hrs ago</span>
 						</div>
+						<!--
 						<div class="thing-interact">
 							<span class="thing-like " title="Like this Thing"><span class="interaction-count">10</span></span>
 							<span class="thing-collect " title="Collect this Thing"><span class="interaction-count collection-count">4</span></span>
-							<a href="/thing:191646/#comments" class="thing-comment" title="View Comments"><span class="interaction-count comment-count">2</span></a>
+							<a href="/thing:<%= thing.id %>/#comments" class="thing-comment" title="View Comments"><span class="interaction-count comment-count">2</span></a>
 						</div>
+						-->
 					</div>
 				</div>
 				<% }); %>
