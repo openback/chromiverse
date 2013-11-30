@@ -13,12 +13,12 @@
 		</script>
 		<script id="profile-template" type="text/template">
 			<nav><ul>
-				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+				<li><a href="#" class="profile active">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
 			</ul></nav>
 			<div class="user-card">
 				<a href="#" class="logout"> X </a>
 				<img class="cover_image" src="<% if (display_small) { %><%= display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
-				<div class="profile-img-wrapper"><img class="avatar" src="<%= thumbnail %>"></div>
+				<div class="profile-image"><img src="<%= thumbnail %>"></div>
 				<div class="about">
 					<h2 class="username"><%= name %></h2>
 					<span class="location"><%= location %></span>
@@ -32,50 +32,53 @@
 			<div class="things">
 				<% if (!things.length) { %><p>Sorry, you have no designs!</p><% } %>
 				<% _.each(things, function(thing) { %>
-					<div class="thing thing-interaction-parent" data-thing-id="<%= thing.id %>" title="<%= thing.name %>">
-					<div class="row-fluid">
-						<a href="<%= thing.public_url %>" class="thing-img-wrapper"><img class="thing-img" src="<%= thing.thumbnail %>"></a>
-						<div class="thing-about">
-							<div class="profile-pic">
-								<div class="profile-img-wrapper"><a href="<%= thing.creator.public_url %>"><img src="<%= thing.creator.thumbnail %>" alt="<%= thing.name %>"></a></div> 
-							</div>
-							<span class="thing-who-what">
-								<span class="thing-made">
-									<span class="thing-name"><%= thing.name %></span>
-									<span class="creator-name">by <a href="<%= thing.creatorpublic_url %>"><%= thing.creator.name %></a></span>
-								</span>						
-							</span>
-						</div>
-						<!--
-						<div class="thing-interact">
-							<span class="thing-like " title="Like this Thing"><span class="interaction-count">10</span></span>
-							<span class="thing-collect " title="Collect this Thing"><span class="interaction-count collection-count">4</span></span>
-							<a href="/thing:<%= thing.id %>/#comments" class="thing-comment" title="View Comments"><span class="interaction-count comment-count">2</span></a>
-						</div>
-						-->
+				<div class="thing" data-thing-id="<%= thing.id %>">
+					<% if (thing.creator) { %>
+					<a class="profile-image" href="<%= thing.creator.public_url %>"><img src="<%= thing.creator.thumbnail %>" alt="<%= thing.creator.name %>"></a>
+					<% } else { %>
+					<div class="profile-image">"><img src="/images/default/avatar.jpg" alt="Unknown"></a>
+					<% } %>
+					<div class="details">
+						<span class="name"><%= thing.name %></span>
+						<% if (thing.creator) { %>
+						<span class="name">by <a href="<%= thing.creator.public_url %>"><%= thing.creator.name %></a></span>
+						<% } %>
+						<a class="thumbnail" href="<%= thing.public_url %>"><img src="<%= thing.thumbnail %>"></a>
 					</div>
 				</div>
 				<% }); %>
 			</div>
 		</script>
 		<script id="collections-template" type="text/template">
-			<nav><ul>
-				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+			<nav><ul>                                                                  
+				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections active">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
 			</ul></nav>
-			<% if (!collections.length) { %><p>Sorry, you have no collections!</p><% } %>
 			<div class="collections">
+				<% if (!collections.length) { %><p>Sorry, you have no collections!</p><% } %>
 				<% _.each(collections, function(collection) { %>
-				<div class="collection">
-					A collection
+				<div class="collection" data-collection-id="<%= collection.id %>">
+					<% if (collection.creator) { %>
+					<a class="profile-image" href="<%= collection.creator.public_url %>"><img src="<%= collection.creator.thumbnail %>" alt="<%= collection.creator.name %>"></a>
+					<% } else { %>
+					<div class="profile-image">"><img src="/images/default/avatar.jpg" alt="Unknown"></a>
+					<% } %>
+					<div class="details">
+						<span class="name"><%= collection.name %></span>
+						<span class="name">by <a href="<%= collection.creator.public_url %>"><%= collection.creator.name %></a></span>
+						<a class="thumbnail" href="<%= collection.public_url %>"><img src="<%= collection.thumbnail %>"></a>
+						<% for (var i = 1; i < 3; i++) { if (collection['thumbnail_' + i]) { %>
+						<img class="thumbnail shift-<%= i %>" src="<%= collection['thumbnail_' + i] %>">
+						<% }} %>
+					</div>
 				</div>
 				<% }); %>
 			</div>
 		</script>
 		<script id="dashboard-template" type="text/template">
 			<nav><ul>
-				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
+				<li><a href="#" class="profile">Me</a></li><li><a href="#" class="dashboard active">Dashboard</a></li><li><a href="#" class="designs">Designs</a></li><li><a href="#" class="collections">Collections</a></li><li><a href="#" class="likes">Likes</a></li>
 			</ul></nav>
-			<% if (!dashboard.length) { %><p>Sorry, your dashboard is empty!</p><% } %>
+			<% if (!dashboard || !dashboard.length) { %><p>Sorry, your dashboard is empty!</p><% } %>
 			<div class="dashboard">
 				<% _.each(dashboard, function(event) { %>
 				<div class="event">
@@ -92,5 +95,4 @@
 			<p class="error none"></p>
 		</header>
 		<section id="content"></section>
-	</body>
 </html>

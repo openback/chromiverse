@@ -405,8 +405,26 @@ nav li a:link, nav li a:visited {
 nav li a:hover {
   color: #095fae;
 }
+/* line 156, ../sass/extension.scss */
+nav li a.active {
+  background-color: #095fae;
+  color: white;
+}
 
-/* line 159, ../sass/extension.scss */
+/* line 164, ../sass/extension.scss */
+.profile-image {
+  -webkit-border-radius: 26px;
+  -moz-border-radius: 26px;
+  -ms-border-radius: 26px;
+  -o-border-radius: 26px;
+  border-radius: 26px;
+  border: 2px solid #fff;
+  height: 50px;
+  overflow: hidden;
+  width: 50px;
+}
+
+/* line 172, ../sass/extension.scss */
 .user-card {
   -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
@@ -416,7 +434,13 @@ nav li a:hover {
   padding: 0 0 10px;
   position: relative;
 }
-/* line 166, ../sass/extension.scss */
+/* line 179, ../sass/extension.scss */
+.user-card .profile-image {
+  left: 20px;
+  position: absolute;
+  top: 50px;
+}
+/* line 185, ../sass/extension.scss */
 .user-card .logout {
   background-color: #fefefe;
   display: inline-block;
@@ -425,38 +449,23 @@ nav li a:hover {
   right: 0;
   top: 0;
 }
-/* line 175, ../sass/extension.scss */
+/* line 194, ../sass/extension.scss */
 .user-card .cover_image {
   height: 83px;
   width: 100%;
 }
-/* line 180, ../sass/extension.scss */
-.user-card .profile-img-wrapper {
-  -webkit-border-radius: 26px;
-  -moz-border-radius: 26px;
-  -ms-border-radius: 26px;
-  -o-border-radius: 26px;
-  border-radius: 26px;
-  border: 2px solid #fff;
-  height: 50px;
-  left: 20px;
-  overflow: hidden;
-  position: absolute;
-  top: 50px;
-  width: 50px;
-}
-/* line 191, ../sass/extension.scss */
+/* line 199, ../sass/extension.scss */
 .user-card .about {
   color: #c3c3c3;
   font-size: 0.9em;
   margin: 5px 0 5px 85px;
 }
-/* line 197, ../sass/extension.scss */
+/* line 205, ../sass/extension.scss */
 .user-card .username {
   color: black;
   font-size: 1.2em;
 }
-/* line 203, ../sass/extension.scss */
+/* line 211, ../sass/extension.scss */
 .user-card .location:before {
   text-indent: -119988px;
   overflow: hidden;
@@ -471,4 +480,77 @@ nav li a:hover {
   opacity: 0.5;
   position: relative;
   top: 3px;
+}
+
+/* line 223, ../sass/extension.scss */
+.thing,
+.collection {
+  -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+  background-color: #fefefe;
+  border: 1px solid #e9e9eb;
+  height: 75px;
+  overflow: hidden;
+  position: relative;
+}
+/* line 231, ../sass/extension.scss */
+.thing .profile-image,
+.collection .profile-image {
+  -webkit-border-radius: 31px;
+  -moz-border-radius: 31px;
+  -ms-border-radius: 31px;
+  -o-border-radius: 31px;
+  border-radius: 31px;
+  height: 60px;
+  left: 7px;
+  position: absolute;
+  top: 7px;
+  width: 60px;
+}
+/* line 240, ../sass/extension.scss */
+.thing .details,
+.collection .details {
+  font-size: 0.8em;
+  overflow: hidden;
+  padding: 5px 75px;
+  width: 100%;
+}
+/* line 246, ../sass/extension.scss */
+.thing .details .creator,
+.collection .details .creator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 0 0 5px 75px;
+}
+/* line 253, ../sass/extension.scss */
+.thing .details .thumbnail,
+.collection .details .thumbnail {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* line 262, ../sass/extension.scss */
+.thing + .thing,
+.collection + .collection {
+  border-top-width: 0;
+}
+
+/* line 266, ../sass/extension.scss */
+.collections .thumbnail {
+  width: 75px;
+}
+/* line 269, ../sass/extension.scss */
+.collections .thumbnail.shift-1 {
+  right: -20px;
+}
+/* line 273, ../sass/extension.scss */
+.collections .thumbnail.shift-2 {
+  right: -40px;
+}
+/* line 277, ../sass/extension.scss */
+.collections .thumbnail.shift-3 {
+  right: -60px;
 }

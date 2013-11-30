@@ -281,7 +281,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 			showLikes: function(next) {
 				self.getLikes(function () {
-					console.log('Likes', things);
+					console.log('Likes', likes);
 					page.replaceWithTemplate('things', {'things': likes}, next);
 				});
 			},
