@@ -11,4 +11,11 @@ define({
 	client_secret: '33884214ccf6789d6f68fa7b245f1db8',
 	client_id:     '6b2177b42a0eaf4b4d83',
 	*/
+	nav_items: [
+		{ 'class': 'profile',     'label': 'Me' },
+		{ 'class': 'dashboard',   'label': 'Dashboard' },
+		{ 'class': 'designs',     'label': 'Designs' },
+		{ 'class': 'collections', 'label': 'Collections' },
+		{ 'class': 'likes',     'label': 'Likes' }
+	]
 });
