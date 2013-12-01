@@ -67,7 +67,14 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				self.getNewest       = self.makeGetter('/newest/');
 				self.getPopular      = self.makeGetter('/popular/');
 				self.getThings       = self.makeGetter('/users/me/things');
-				self.getUser         = self.makeGetter('/users/me/');
+				self.getUser         = self.makeGetter('/users/me/', function (data) {
+						// Make images easier to get at
+						_.each(data.cover_image.sizes, function(image) {
+							data[image.type + '_' + image.size] = image.url;
+						});
+
+						return data;
+				});
 				self.showCollections = self.makeView('collections', self.getCollections, { 'nav': 'collections'});
 				self.showDashboard   = self.makeView('dashboard'  , self.getDashboard,   { 'nav': 'dashboard'});
 				self.showFeatured    = self.makeView('things'     , self.getFeatured,    { 'nav': 'featured'});
@@ -175,36 +182,24 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				}
 			},
 
-			getUser: function(next, force) {
-				if (user == null || force === true) {
-					get('/users/me/', function (data) {
-						user = data;
-
-						// Make images easier to get at
-						_.each(user.cover_image.sizes, function(image) {
-							user[image.type + '_' + image.size] = image.url;
-						});
-
-						if (typeof next === 'function') { next(); }
-					});
-				} else {
-					if (typeof next === 'function') { next(); }
-				}
-			},
-
 			/**
 			 * Creates a method which will perform a get from the specified path
 			 * @param path String API path
+			 * @param massager function Function that accepts and returns an object. Used to massage the data
 			 * @return function
 			 */
-			makeGetter: function (path) {
+			makeGetter: function (path, massager) {
 				// Cache for the API call
 				var storage = null;
 
 				return function (next, force) {
 					if (storage == null || force === true) {
 						get(path, function (data) {
-							storage = data;
+							if (typeof massager === 'function') {
+								storage = massager(data);
+							} else {
+								storage = data;
+							}
 
 							if (typeof next === 'function') { next(storage); }
 						});
