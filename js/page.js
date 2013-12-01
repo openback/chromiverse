@@ -50,15 +50,23 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 				$error.stop().slideUp('fast');
 			},
 
+			/**
+			 * Get the nav
+			 * @param active String classname of the section to set as 'active'
+			 * @return String HTML
+			 */
 			getNav: function (active) {
-				// Store our compiled templates
 				var compiled = self.getCompiledTemplate('nav');
 
 				return compiled({'items': config.nav_items, 'active': active});
 			},
 
+			/**
+			 * Returns the specified compiled template, compiling it if needed
+			 * @param template_id String ID of template element, minus '-template'
+			 * @return function Compiled underscore.js template
+			 */
 			getCompiledTemplate: function(template_id) {
-				// Store our compiled templates
 				return (templates[template_id]) ? 
 					templates[template_id] 
 					: templates[template_id] = _.template($('#' + template_id + '-template').html());
@@ -67,7 +75,7 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 			/**
 			 * Replaces #content with the result of an underscore template
 			 * @param template_id string First part of the template id, minus '-template'
-			 * @param data object Data to pass to the compiled template
+			 * @param data object Data to pass to the compiled template, including nav classname
 			 * @param settings object Optional Settings to pass to the compiled template
 			 * @param next function optional Callback
 			 */

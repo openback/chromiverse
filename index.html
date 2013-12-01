@@ -32,6 +32,7 @@
 			<%= nav %>
 			<div class="things">
 				<% if (!things.length) { %><p>Sorry, you have no designs!</p><% } %>
+				<% if (typeof header !== 'undefined' && header) { %><h1><%= header %></h1><% } %>
 				<% _.each(things, function(thing) { %>
 				<div class="thing" data-thing-id="<%= thing.id %>">
 					<% if (thing.creator) { %>

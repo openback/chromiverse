@@ -16,6 +16,9 @@ define({
 		{ 'class': 'dashboard',   'label': 'Dashboard' },
 		{ 'class': 'designs',     'label': 'Designs' },
 		{ 'class': 'collections', 'label': 'Collections' },
-		{ 'class': 'likes',     'label': 'Likes' }
+		{ 'class': 'likes',       'label': 'Likes' },
+		{ 'class': 'featured',    'label': 'Featured' },
+		{ 'class': 'newest',      'label': 'Newest' },
+		{ 'class': 'popular',     'label': 'Popular' },
 	]
 });

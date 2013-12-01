@@ -9,7 +9,7 @@ requirejs.config({
 	}
 });
 
-require(['jquery', 'thingiverse', 'page'], function ($, thingiverse, page) {
+require(['jquery', 'thingiverse'], function ($, thingiverse) {
 	"use strict";
 
 	$(document).ready(function () {

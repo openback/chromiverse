@@ -2,16 +2,10 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 	var Thingiverse = (function () {
 		"use strict";
 		var self;
-		var access_token  = null;
-		var	$content      = null;
-		var	user          = null;
-		var	dashboard     = null;
-		var	likes         = null;
-		var	mades         = null;
-		var	things        = null;
-		var	collections   = null;
-		var	followers     = null;
-		var	following     = null;
+		var registered_nav = false;
+		var access_token   = null;
+		var $content       = null;
+		var user           = null;
 
 		/**
 		* Gets to an API endpoint
@@ -65,6 +59,15 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			*/
 			initialize: function () {
 				self = this;
+				self.getDashboard   = self.makeGetter('/events');
+				self.getFeatured    = self.makeGetter('/featured/');
+				self.getUser        = self.makeGetter('/users/me/');
+				self.getCollections = self.makeGetter('/users/me/collections');
+				self.getMade        = self.makeGetter('/users/me/copies');
+				self.getLikes       = self.makeGetter('/users/me/likes');
+				self.getThings      = self.makeGetter('/users/me/things');
+				self.getNewest      = self.makeGetter('/newest/');
+				self.getPopular     = self.makeGetter('/popular/');
 
 				$(document).ready(function () {
 					$content = $('#content');
@@ -88,12 +91,11 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				});
 			},
 
+			/**
+			 * Gets and displays the user's profile
+			 */
 			defaultView: function (next) {
-				self.getUser(function () {
-					self.showUser(function () {
-						self.registerNav(next);
-					});
-				});
+				self.showUser(function () { self.registerNav(next); });
 			},
 
 			/**
@@ -101,7 +103,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 */
 			checkLogin: function(next) {
 				chrome.storage.sync.get('access_token', function (items) {
-					if (items.access_token) { // TODO: HOw to check runtime error?
+					if (items.access_token) {
 						// TODO: How to check runtime error?
 						access_token = items.access_token;
 						self.defaultView(next);
@@ -136,39 +138,51 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					});
 			},
 
+			/**
+			 * Sets the event handlers for our nav
+			 * @param next function Callback
+			 */
 			registerNav: function(next) {
-				$content.on('click', 'nav .profile', function (e) {
-					e.preventDefault();
-					self.showUser(next);
-				}).on('click', 'nav .dashboard', function (e) {
-					e.preventDefault();
-					self.showDashboard(next);
-				}).on('click', 'nav .designs', function (e) {
-					e.preventDefault();
-					self.showThings(next);
-				}).on('click', 'nav .collections', function (e) {
-					e.preventDefault();
-					self.showCollections(next);
-				}).on('click', 'nav .likes', function (e) {
-					e.preventDefault();
-					self.showLikes(next);
-				}).on('click', '.logout', function (e) {
-					e.preventDefault();
-					chrome.storage.sync.clear(function () {
-						self.checkLogin(function () {
-							page.showError('You have been logged out', true);
-							if (typeof next === 'function') { next(); }
+				if (!registered_nav) {
+					$content.on('click', 'nav .profile', function (e) {
+						e.preventDefault();
+						self.showUser(next);
+					}).on('click', 'nav .dashboard', function (e) {
+						e.preventDefault();
+						self.showDashboard(next);
+					}).on('click', 'nav .designs', function (e) {
+						e.preventDefault();
+						self.showThings(next);
+					}).on('click', 'nav .collections', function (e) {
+						e.preventDefault();
+						self.showCollections(next);
+					}).on('click', 'nav .likes', function (e) {
+						e.preventDefault();
+						self.showLikes(next);
+					}).on('click', 'nav .featured', function (e) {
+						e.preventDefault();
+						self.showFeatured(next);
+					}).on('click', 'nav .newest', function (e) {
+						e.preventDefault();
+						self.showNewest(next);
+					}).on('click', 'nav .popular', function (e) {
+						e.preventDefault();
+						self.showPopular(next);
+					}).on('click', '.logout', function (e) {
+						e.preventDefault();
+						chrome.storage.sync.clear(function () {
+							self.checkLogin(function () {
+								page.showError('You have been logged out', true);
+								if (typeof next === 'function') { next(); }
+							});
 						});
-					});
-				})
+					})
+
+					registered_nav = true;
+				}
 			},
 
 			/* helper functions for retrieving each portion of our data */
-			getDashboard: function(next, force) {
-				dashboard = [];
-				if (typeof next === 'function') { next(); }
-			},
-
 			getUser: function(next, force) {
 				if (user == null || force === true) {
 					get('/users/me/', function (data) {
@@ -186,51 +200,25 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				}
 			},
 
-			getLikes: function(next, force) {
-				if (likes == null || force === true) {
-					get('/users/me/likes', function (data) {
-						likes = data;
+			/**
+			 * Creates a method which will perform a get from the specified path
+			 * @param path String API path
+			 * @return function
+			 */
+			makeGetter: function (path) {
+				// Cache for the API call
+				var storage = null;
 
-						if (typeof next === 'function') { next(); }
-					});
-				} else {
-					if (typeof next === 'function') { next(); }
-				}
-			},
+				return function (next, force) {
+					if (storage == null || force === true) {
+						get(path, function (data) {
+							storage = data;
 
-			getCollections: function(next, force) {
-				if (collections == null || force === true) {
-					get('/users/me/collections', function (data) {
-						collections = data;
-
-						if (typeof next === 'function') { next(); }
-					});
-				} else {
-					if (typeof next === 'function') { next(); }
-				}
-			},
-
-			getThings: function(next, force) {
-				if (things == null || force === true) {
-					get('/users/me/things', function (data) {
-						things = data;
-
-						if (typeof next === 'function') { next(); }
-					});
-				} else {
-					if (typeof next === 'function') { next(); }
-				}
-			},
-
-			getMade: function(next, force) {
-				if (mades == null || force === true) {
-					get('/users/me/copies', function (data) {
-						mades = data;
-
-						if (typeof next === 'function') { next(); }
-					});
-				} else {
-					if (typeof next === 'function') { next(); }
+							if (typeof next === 'function') { next(storage); }
+						});
+					} else {
+						if (typeof next === 'function') { next(storage); }
+					}
 				}
 			},
 
@@ -240,38 +228,56 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			},
 
 			showUser: function(next) {
-				self.getUser(function () {
+				self.getUser(function (user) {
 					page.replaceWithTemplate('profile', {'user':user, 'nav':'profile'}, next);
 				});
 			},
 
 			showLikes: function(next) {
-				self.getLikes(function () {
+				self.getLikes(function (likes) {
 					page.replaceWithTemplate('things', {'things': likes, 'nav': 'likes'}, next);
 				});
 			},
 
 			showThings: function(next) {
-				self.getThings(function () {
+				self.getThings(function (things) {
 					page.replaceWithTemplate('things', {'things': things, 'nav':'designs'}, next);
 				});
 			},
 
 			showMade: function(next) {
-				self.getMade(function () {
-					page.replaceWithTemplate('things', {'things': mades, 'nav':'mades'}, next);
+				self.getMade(function (things) {
+					page.replaceWithTemplate('things', {'things': things, 'nav':'mades'}, next);
 				});
 			},
 
 			showCollections: function(next) {
-				self.getCollections(function () {
+				self.getCollections(function (collections) {
 					page.replaceWithTemplate('collections', {'collections': collections, 'nav':'collections'}, next);
 				});
 			},
 
 			showDashboard: function(next) {
-				self.getCollections(function () {
+				self.getDashboard(function (dashboard) {
 					page.replaceWithTemplate('dashboard', {'dashboard': dashboard, 'nav': 'dashboard'}, next);
+				});
+			},
+
+			showFeatured: function(next) {
+				self.getFeatured(function (things) {
+					page.replaceWithTemplate('things', {'things': things, 'nav': 'featured', 'header': 'Featured'}, next);
+				});
+			},
+
+			showNewest: function(next) {
+				self.getNewest(function (things) {
+					page.replaceWithTemplate('things', {'things': things, 'nav': 'newest', 'header': 'Newest'}, next);
+				});
+			},
+
+			showPopular: function(next) {
+				self.getPopular(function (things) {
+					page.replaceWithTemplate('things', {'things': things, 'nav': 'popular', 'header': 'Popular'}, next);
 				});
 			}
 		};
