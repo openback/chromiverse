@@ -12,9 +12,9 @@ define({
 	client_id:     '6b2177b42a0eaf4b4d83',
 	*/
 	nav_items: [
-		{ 'class': 'profile',     'label': 'Me' },
+		{ 'class': 'user',        'label': 'Me' },
 		{ 'class': 'dashboard',   'label': 'Dashboard' },
-		{ 'class': 'designs',     'label': 'Designs' },
+		{ 'class': 'things',      'label': 'Designs' },
 		{ 'class': 'collections', 'label': 'Collections' },
 		{ 'class': 'likes',       'label': 'Likes' },
 		{ 'class': 'featured',    'label': 'Featured' },

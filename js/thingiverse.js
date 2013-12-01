@@ -153,30 +153,14 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 */
 			registerNav: function(next) {
 				if (!registered_nav) {
-					$content.on('click', 'nav .profile', function (e) {
+					$content.on('click', 'nav', function (e) {
+						// Nav handler
 						e.preventDefault();
-						self.showUser(next);
-					}).on('click', 'nav .dashboard', function (e) {
-						e.preventDefault();
-						self.showDashboard(next);
-					}).on('click', 'nav .designs', function (e) {
-						e.preventDefault();
-						self.showThings(next);
-					}).on('click', 'nav .collections', function (e) {
-						e.preventDefault();
-						self.showCollections(next);
-					}).on('click', 'nav .likes', function (e) {
-						e.preventDefault();
-						self.showLikes(next);
-					}).on('click', 'nav .featured', function (e) {
-						e.preventDefault();
-						self.showFeatured(next);
-					}).on('click', 'nav .newest', function (e) {
-						e.preventDefault();
-						self.showNewest(next);
-					}).on('click', 'nav .popular', function (e) {
-						e.preventDefault();
-						self.showPopular(next);
+						var class_name = e.originalEvent.srcElement.className;
+
+						if (class_name.indexOf('active') === -1) {
+							self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
+						}
 					}).on('click', '.logout', function (e) {
 						e.preventDefault();
 						chrome.storage.sync.clear(function () {
