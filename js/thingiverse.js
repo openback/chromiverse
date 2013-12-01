@@ -59,15 +59,24 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			*/
 			initialize: function () {
 				self = this;
-				self.getDashboard   = self.makeGetter('/events');
-				self.getFeatured    = self.makeGetter('/featured/');
-				self.getUser        = self.makeGetter('/users/me/');
-				self.getCollections = self.makeGetter('/users/me/collections');
-				self.getMade        = self.makeGetter('/users/me/copies');
-				self.getLikes       = self.makeGetter('/users/me/likes');
-				self.getThings      = self.makeGetter('/users/me/things');
-				self.getNewest      = self.makeGetter('/newest/');
-				self.getPopular     = self.makeGetter('/popular/');
+				self.getCollections  = self.makeGetter('/users/me/collections');
+				self.getDashboard    = self.makeGetter('/events');
+				self.getFeatured     = self.makeGetter('/featured/');
+				self.getLikes        = self.makeGetter('/users/me/likes');
+				self.getMade         = self.makeGetter('/users/me/copies');
+				self.getNewest       = self.makeGetter('/newest/');
+				self.getPopular      = self.makeGetter('/popular/');
+				self.getThings       = self.makeGetter('/users/me/things');
+				self.getUser         = self.makeGetter('/users/me/');
+				self.showCollections = self.makeView('collections', self.getCollections, { 'nav': 'collections'});
+				self.showDashboard   = self.makeView('dashboard'  , self.getDashboard,   { 'nav': 'dashboard'});
+				self.showFeatured    = self.makeView('things'     , self.getFeatured,    { 'nav': 'featured'});
+				self.showLikes       = self.makeView('things'     , self.getLikes,       { 'nav': 'likes'      , 'header': 'Likes'});
+				self.showMade        = self.makeView('things'     , self.getMade,        { 'nav': 'made'       , 'header': 'Made'});
+				self.showNewest      = self.makeView('things'     , self.getNewest,      { 'nav': 'newest'     , 'header': 'Newest'});
+				self.showPopular     = self.makeView('things'     , self.getPopular,     { 'nav': 'popular'    , 'header': 'Popular'});
+				self.showThings      = self.makeView('things'     , self.getThings,      { 'nav': 'things'});
+				self.showUser        = self.makeView('user'       , self.getUser,        { 'nav': 'user'});
 
 				$(document).ready(function () {
 					$content = $('#content');
@@ -182,7 +191,6 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				}
 			},
 
-			/* helper functions for retrieving each portion of our data */
 			getUser: function(next, force) {
 				if (user == null || force === true) {
 					get('/users/me/', function (data) {
@@ -222,64 +230,27 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				}
 			},
 
-			/* helper functions for showing each page */
+			/**
+			 * Creates a method which will display a view after getting the specified data
+			 * @param String Underscore template id, minus the '-template' suffix
+			 * @param get_function function The function to use to retrieve data, which sends it via a callback
+			 * @param static_data Object Contains static data so be sent to the template
+			 * @return function
+			 */
+			makeView: function(template_id, get_function, static_data) {
+				var data = static_data || {};
+
+				return function (next) {
+					get_function(function (got_data) {
+						data[template_id] = got_data;
+						page.replaceWithTemplate(template_id, data, next);
+					});
+				};
+			},
+
 			showLogin: function(next) {
 				page.replaceWithTemplate('login', null, next);
 			},
-
-			showUser: function(next) {
-				self.getUser(function (user) {
-					page.replaceWithTemplate('profile', {'user':user, 'nav':'profile'}, next);
-				});
-			},
-
-			showLikes: function(next) {
-				self.getLikes(function (likes) {
-					page.replaceWithTemplate('things', {'things': likes, 'nav': 'likes'}, next);
-				});
-			},
-
-			showThings: function(next) {
-				self.getThings(function (things) {
-					page.replaceWithTemplate('things', {'things': things, 'nav':'designs'}, next);
-				});
-			},
-
-			showMade: function(next) {
-				self.getMade(function (things) {
-					page.replaceWithTemplate('things', {'things': things, 'nav':'mades'}, next);
-				});
-			},
-
-			showCollections: function(next) {
-				self.getCollections(function (collections) {
-					page.replaceWithTemplate('collections', {'collections': collections, 'nav':'collections'}, next);
-				});
-			},
-
-			showDashboard: function(next) {
-				self.getDashboard(function (dashboard) {
-					page.replaceWithTemplate('dashboard', {'dashboard': dashboard, 'nav': 'dashboard'}, next);
-				});
-			},
-
-			showFeatured: function(next) {
-				self.getFeatured(function (things) {
-					page.replaceWithTemplate('things', {'things': things, 'nav': 'featured', 'header': 'Featured'}, next);
-				});
-			},
-
-			showNewest: function(next) {
-				self.getNewest(function (things) {
-					page.replaceWithTemplate('things', {'things': things, 'nav': 'newest', 'header': 'Newest'}, next);
-				});
-			},
-
-			showPopular: function(next) {
-				self.getPopular(function (things) {
-					page.replaceWithTemplate('things', {'things': things, 'nav': 'popular', 'header': 'Popular'}, next);
-				});
-			}
 		};
 
 		return Thingiverse;
