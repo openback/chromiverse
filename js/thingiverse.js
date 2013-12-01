@@ -1,11 +1,11 @@
 define(['jquery', 'config', 'page'], function($, config, page) {
+	"use strict";
+
 	var Thingiverse = (function () {
-		"use strict";
 		var self;
-		var registered_nav = false;
+		var registered_events = false;
 		var access_token   = null;
 		var $content       = null;
-		var user           = null;
 
 		/**
 		* Gets to an API endpoint
@@ -20,25 +20,6 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			}
 
 			$.get(config.api_host.concat(path, '?access_token=', access_token), payload)
-				.done(function (data) { next(data); })
-				.fail(function () { 
-					console.log('Handle this somehow?');
-				});
-		};
-
-		/**
-		* Posts to an API endpoint
-		* @param path string Endpoint path, including leading slash
-		* @param payload Optional object Data to be sent
-		* @param next function Callback
-		*/
-		var post = function(path, payload, next) {
-			if (typeof payload === 'function') {
-				next = payload;
-				payload = null;
-			}
-
-			$.post(config.api_host.concat(path, '?access_token=', access_token), payload)
 				.done(function (data) { next(data); })
 				.fail(function () { 
 					console.log('Handle this somehow?');
@@ -87,23 +68,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 				$(document).ready(function () {
 					$content = $('#content');
-
-					// Login form handler
-					$('#content').on('submit', '#sign-in', function (e) {
-						e.preventDefault();
-						var username = $('#username').val();
-						var password = $('#password').val();
-
-						if (!username) {
-							page.showError('Please enter a username');
-						} else if (!password) {
-							page.showError('Please enter a password');
-						} else {
-							page.hideError();
-							page.showLoading();
-							self.login($('#username').val(), $('#password').val());
-						}
-					});
+					self.registerEvents();
 				});
 			},
 
@@ -119,13 +84,13 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 */
 			checkLogin: function(next) {
 				chrome.storage.sync.get('access_token', function (items) {
-					if (items.access_token) {
-						// TODO: How to check runtime error?
-						access_token = items.access_token;
-						self.defaultView(next);
-					} else {
+					if (chrome.runtime.lastError || !items.access_token) {
 						self.showLogin(next);
+						return;
 					}
+
+					access_token = items.access_token;
+					self.defaultView(next);
 				});
 			},
 
@@ -146,7 +111,14 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				$.post(config.login_url, data)
 					.done(function (response) { 
 						access_token = response.access_token;
-						chrome.storage.sync.set({'access_token': access_token}, self.defaultView);
+						chrome.storage.sync.set({'access_token': access_token}, function () {
+							if (chrome.runtime.lastError) {
+								page.showError(chrome.runtime.lastError.message);
+								page.hideLoading();
+							} else {
+								self.defaultView();
+							}
+						});
 					})
 					.fail(function () { 
 						page.showError('There was a problem logging in');
@@ -155,13 +127,25 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			},
 
 			/**
-			 * Sets the event handlers for our nav
-			 * @param next function Callback
+			 * Sets our event handlers
 			 */
-			registerNav: function(next) {
-				if (!registered_nav) {
-					$content.on('click', 'nav', function (e) {
-						// Nav handler
+			registerEvents: function() {
+				if (!registered_events) {
+					$content.on('submit', '#sign-in', function (e) {
+						e.preventDefault();
+						var username = $('#username').val();
+						var password = $('#password').val();
+
+						if (!username) {
+							page.showError('Please enter a username');
+						} else if (!password) {
+							page.showError('Please enter a password');
+						} else {
+							page.hideError();
+							page.showLoading();
+							self.login($('#username').val(), $('#password').val());
+						}
+					}).on('click', 'nav', function (e) {
 						e.preventDefault();
 						var class_name = e.originalEvent.srcElement.className;
 
@@ -171,14 +155,14 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					}).on('click', '.logout', function (e) {
 						e.preventDefault();
 						chrome.storage.sync.clear(function () {
-							self.checkLogin(function () {
+							self.checkLogin(function (next) {
 								page.showError('You have been logged out', true);
 								if (typeof next === 'function') { next(); }
 							});
 						});
-					})
+					});
 
-					registered_nav = true;
+					registered_events = true;
 				}
 			},
 
@@ -193,7 +177,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				var storage = null;
 
 				return function (next, force) {
-					if (storage == null || force === true) {
+					if (storage === null || force === true) {
 						get(path, function (data) {
 							if (typeof massager === 'function') {
 								storage = massager(data);
@@ -206,7 +190,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 					} else {
 						if (typeof next === 'function') { next(storage); }
 					}
-				}
+				};
 			},
 
 			/**
@@ -229,7 +213,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 			showLogin: function(next) {
 				page.replaceWithTemplate('login', null, next);
-			},
+			}
 		};
 
 		return Thingiverse;

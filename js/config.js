@@ -19,6 +19,6 @@ define({
 		{ 'class': 'likes',       'label': 'Likes' },
 		{ 'class': 'featured',    'label': 'Featured' },
 		{ 'class': 'newest',      'label': 'Newest' },
-		{ 'class': 'popular',     'label': 'Popular' },
+		{ 'class': 'popular',     'label': 'Popular' }
 	]
 });

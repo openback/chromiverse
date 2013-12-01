@@ -1,6 +1,7 @@
 define(['jquery', 'underscore', 'config'], function ($, _, config) {
+	"use strict";
+
 	var Page = (function () {
-		"use strict";
 		var self;
 		var $error;
 		var errorTimeout;
@@ -67,9 +68,9 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 			 * @return function Compiled underscore.js template
 			 */
 			getCompiledTemplate: function(template_id) {
-				return (templates[template_id]) ? 
-					templates[template_id] 
-					: templates[template_id] = _.template($('#' + template_id + '-template').html());
+				templates[template_id] = templates[template_id] || _.template($('#' + template_id + '-template').html());
+
+				return templates[template_id];
 			},
 
 			/**
@@ -85,7 +86,9 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 					settings = null;
 				}
 
-				data.nav = self.getNav(data.nav);
+				if (data && data.nav) {
+					data.nav = self.getNav(data.nav);
+				}
 
 				var compiled = self.getCompiledTemplate(template_id);
 
