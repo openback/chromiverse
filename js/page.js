@@ -86,7 +86,8 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 					settings = null;
 				}
 
-				if (data && data.nav) {
+				// Only generate the nav if it's specified and doesn't contain HTML already
+				if (data && data.nav && data.nav.indexOf('<') === -1) {
 					data.nav = self.getNav(data.nav);
 				}
 

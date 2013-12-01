@@ -8,11 +8,11 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 		var $content       = null;
 
 		/**
-		* Gets to an API endpoint
-		* @param path string Endpoint path, including leading slash
-		* @param payload Optional object Data to be sent
-		* @param next function Callback
-		*/
+		 * Gets to an API endpoint
+		 * @param path string Endpoint path, including leading slash
+		 * @param payload Optional object Data to be sent
+		 * @param next function Callback
+		 */
 		var get = function(path, payload, next) {
 			if (typeof payload === 'function') {
 				next = payload;
@@ -27,8 +27,8 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 		};
 
 		/**
-		* Creates our object. Should never need to be touched
-		*/
+		 * Creates our object. Should never need to be touched
+		 */
 		var Thingiverse = function () {
 			this.initialize();
 		};
@@ -36,8 +36,8 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 		Thingiverse.prototype = {
 			constructor: Thingiverse,
 			/**
-			* Effectively our constructor.
-			*/
+			 * Effectively our constructor.
+			 */
 			initialize: function () {
 				self = this;
 				self.getCollections  = self.makeGetter('/users/me/collections');
@@ -49,12 +49,12 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				self.getPopular      = self.makeGetter('/popular/');
 				self.getThings       = self.makeGetter('/users/me/things');
 				self.getUser         = self.makeGetter('/users/me/', function (data) {
-						// Make images easier to get at
-						_.each(data.cover_image.sizes, function(image) {
-							data[image.type + '_' + image.size] = image.url;
-						});
+					// Make images easier to get at
+					_.each(data.cover_image.sizes, function(image) {
+						data[image.type + '_' + image.size] = image.url;
+					});
 
-						return data;
+					return data;
 				});
 				self.showCollections = self.makeView('collections', self.getCollections, { 'nav': 'collections'});
 				self.showDashboard   = self.makeView('dashboard'  , self.getDashboard,   { 'nav': 'dashboard'});
@@ -66,17 +66,13 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				self.showThings      = self.makeView('things'     , self.getThings,      { 'nav': 'things'});
 				self.showUser        = self.makeView('user'       , self.getUser,        { 'nav': 'user'});
 
+				// Sets the default view to display when logged in
+				self.defaultView = self.showUser;
+
 				$(document).ready(function () {
 					$content = $('#content');
 					self.registerEvents();
 				});
-			},
-
-			/**
-			 * Gets and displays the user's profile
-			 */
-			defaultView: function (next) {
-				self.showUser(function () { self.registerNav(next); });
 			},
 
 			/**
@@ -95,10 +91,10 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			},
 
 			/**
-			* Handles our login and displays our profile page
-			* @param username string
-			* @param password string
-			*/
+			 * Handles our login and displays our profile page
+			 * @param username string
+			 * @param password string
+			 */
 			login: function(username, password) {
 				var data = {
 					'grant_type':'password',
