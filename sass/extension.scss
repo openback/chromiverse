@@ -29,6 +29,7 @@ body {
 }
 
 a {
+	cursor: pointer;
 	text-decoration: none;
 
 	&:link,
@@ -139,8 +140,12 @@ nav {
 		display: inline-block;
 		width: 20%;
 
-		+ li {
+		+ li:not(:nth-child(6)) {
 			border-left: none;
+		}
+
+		&:nth-child(n + 6) {
+			border-top: none;
 		}
 
 		a {
@@ -160,6 +165,10 @@ nav {
 			&.active {
 				background-color: $dark-blue;
 				color: white;
+
+				&:hover {
+					cursor: default;
+				}
 			}
 		}
 	}

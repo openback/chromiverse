@@ -13,13 +13,13 @@
 		</script>
 		<script id="nav-template" type="text/template">
 			<nav><ul>
-				<% _.each(items, function(item) { %><li><a href="#" class="<%= item.class + ((item.class == active)? ' active': '') %>"><%= item.label %></a></li><% }); %>
+				<% _.each(items, function(item) { %><li><a class="<%= item.class + ((item.class == active)? ' active': '') %>"><%= item.label %></a></li><% }); %>
 			</ul></nav>
 		</script>
 		<script id="user-template" type="text/template">
 			<%= nav %>
 			<div class="user-card">
-				<a href="#" class="logout"> X </a>
+				<a class="logout"> X </a>
 				<img class="cover_image" src="<% if (user.display_small) { %><%= user.display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
 				<div class="profile-image"><img src="<%= user.thumbnail %>"></div>
 				<div class="about">

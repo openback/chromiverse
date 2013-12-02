@@ -49,10 +49,12 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				self.getPopular      = self.makeGetter('/popular/');
 				self.getThings       = self.makeGetter('/users/me/things');
 				self.getUser         = self.makeGetter('/users/me/', function (data) {
-					// Make images easier to get at
-					_.each(data.cover_image.sizes, function(image) {
-						data[image.type + '_' + image.size] = image.url;
-					});
+					if (data.cover_image !== null) {
+						// Make images easier to get at
+						_.each(data.cover_image.sizes, function(image) {
+							data[image.type + '_' + image.size] = image.url;
+						});
+					}
 
 					return data;
 				});
@@ -127,7 +129,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 */
 			registerEvents: function() {
 				if (!registered_events) {
-					$content.on('submit', '#sign-in', function (e) {
+					$content.on('submit.thingiverse', '#sign-in', function (e) {
 						e.preventDefault();
 						var username = $('#username').val();
 						var password = $('#password').val();
@@ -139,16 +141,16 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 						} else {
 							page.hideError();
 							page.showLoading();
-							self.login($('#username').val(), $('#password').val());
+							self.login(username, password);
 						}
-					}).on('click', 'nav', function (e) {
+					}).on('click.thingiverse', 'nav', function (e) {
 						e.preventDefault();
 						var class_name = e.originalEvent.srcElement.className;
 
 						if (class_name.indexOf('active') === -1) {
 							self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
 						}
-					}).on('click', '.logout', function (e) {
+					}).on('click.thingiverse', '.logout', function (e) {
 						e.preventDefault();
 						chrome.storage.sync.clear(function () {
 							self.checkLogin(function (next) {
@@ -160,6 +162,13 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 					registered_events = true;
 				}
+			},
+
+			/**
+			 * Removes all our event handlers. Use this before reinstantiating
+			 */
+			unregisterEvents: function() {
+				$content.off('.thingiverse');
 			},
 
 			/**
