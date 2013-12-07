@@ -1,29 +1,47 @@
-define(['jquery', 'config', 'page'], function($, config, page) {
+define(['config', 'page'], function(config, page) {
 	"use strict";
 
 	var Thingiverse = (function () {
 		var self;
 		var registered_events = false;
 		var access_token   = null;
-		var $content       = null;
+		var content        = null;
 
 		/**
-		 * Gets to an API endpoint
-		 * @param path string Endpoint path, including leading slash
+		 * Make an ajax call to an API endpoint or URL
+		 * @param string method Normally 'GET' or 'POST'
+		 * @param path string Endpoint path, including leading slash if for API
 		 * @param payload Optional object Data to be sent
 		 * @param next function Callback
+		 *  TODO: If it's an API call and we don't have a token, crap out
 		 */
-		var get = function(path, payload, next) {
+		var ajax = function(method, path, payload, next) {
+			var url = (path.charAt(0) === '/') ?  config.api_host.concat(path, '?access_token=', access_token) : path;
+			var req = new XMLHttpRequest();
+
 			if (typeof payload === 'function') {
 				next = payload;
 				payload = null;
 			}
 
-			$.get(config.api_host.concat(path, '?access_token=', access_token), payload)
-				.done(function (data) { next(data); })
-				.fail(function () { 
-					console.log('Handle this somehow?');
-				});
+			req.onreadystatechange = function () {
+				if (req.readyState === 4) {
+					if (next) {
+						if (req.status === 200) {
+							next(null, JSON.parse(req.response));
+						} else {
+							next(req.responseText);
+						}
+					}
+				}
+			};
+
+			if (payload) {
+				payload = (payload.constructor === FormData) ? payload : JSON.stringify(payload);
+			}
+
+			req.open(method, url, true);
+			req.send(payload);
 		};
 
 		/**
@@ -70,11 +88,8 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 				// Sets the default view to display when logged in
 				self.defaultView = self.showUser;
-
-				$(document).ready(function () {
-					$content = $('#content');
-					self.registerEvents();
-				});
+				content = document.getElementById('content');
+				self.registerEvents();
 			},
 
 			/**
@@ -82,7 +97,7 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 */
 			checkLogin: function(next) {
 				chrome.storage.sync.get('access_token', function (items) {
-					if (chrome.runtime.lastError || !items.access_token) {
+					if (chrome.runtime.lastError || !items || !items.access_token) {
 						self.showLogin(next);
 						return;
 					}
@@ -98,30 +113,30 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 * @param password string
 			 */
 			login: function(username, password) {
-				var data = {
-					'grant_type':'password',
-					'client_id': config.client_id,
-					'client_secret': config.client_secret,
-					'username': username,
-					'password': password
-				};
+				var data = new FormData();
+				data.append('grant_type','password');
+				data.append('client_id', config.client_id);
+				data.append('client_secret', config.client_secret);
+				data.append('username', username);
+				data.append('password', password);
 
-				$.post(config.login_url, data)
-					.done(function (response) { 
-						access_token = response.access_token;
-						chrome.storage.sync.set({'access_token': access_token}, function () {
-							if (chrome.runtime.lastError) {
-								page.showError(chrome.runtime.lastError.message);
-								page.hideLoading();
-							} else {
-								self.defaultView();
-							}
-						});
-					})
-					.fail(function () { 
+				ajax('post', config.login_url, data, function (err, response) {
+					if (err) {
 						page.showError('There was a problem logging in');
 						page.hideLoading();
+						return;
+					}
+
+					access_token = response.access_token;
+					chrome.storage.sync.set({'access_token': access_token}, function () {
+						if (chrome.runtime.lastError) {
+							page.showError(chrome.runtime.lastError.message);
+							page.hideLoading();
+						} else {
+							self.defaultView();
+						}
 					});
+				});
 			},
 
 			/**
@@ -129,37 +144,8 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 */
 			registerEvents: function() {
 				if (!registered_events) {
-					$content.on('submit.thingiverse', '#sign-in', function (e) {
-						e.preventDefault();
-						var username = $('#username').val();
-						var password = $('#password').val();
-
-						if (!username) {
-							page.showError('Please enter a username');
-						} else if (!password) {
-							page.showError('Please enter a password');
-						} else {
-							page.hideError();
-							page.showLoading();
-							self.login(username, password);
-						}
-					}).on('click.thingiverse', 'nav', function (e) {
-						e.preventDefault();
-						var class_name = e.originalEvent.srcElement.className;
-
-						if (class_name.indexOf('active') === -1) {
-							self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
-						}
-					}).on('click.thingiverse', '.logout', function (e) {
-						e.preventDefault();
-						chrome.storage.sync.clear(function () {
-							self.checkLogin(function (next) {
-								page.showError('You have been logged out', true);
-								if (typeof next === 'function') { next(); }
-							});
-						});
-					});
-
+					content.addEventListener('click', self.content_click_listener);
+					content.addEventListener('submit', self.sign_in_submit_listener);
 					registered_events = true;
 				}
 			},
@@ -168,7 +154,53 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 			 * Removes all our event handlers. Use this before reinstantiating
 			 */
 			unregisterEvents: function() {
-				$content.off('.thingiverse');
+				content.removeEventListener('click', self.content_click_listener);
+				content.removeEventListener('submit', self.sign_in_submit_listener);
+				registered_events = false;
+			},
+
+			content_click_listener: function (e) {
+				switch (e.target.tagName) {
+					case 'A':
+						if (e.target.className === 'logout') {
+							e.preventDefault();
+
+							chrome.storage.sync.clear(function () {
+								self.checkLogin(function (next) {
+									page.showError('You have been logged out', true);
+									if (typeof next === 'function') { next(); }
+								});
+							});
+						} else if (page.hasParent(e.target, 'nav')) {
+							var class_name = e.target.className;
+
+							e.preventDefault();
+
+							if (class_name.indexOf('active') === -1) {
+								self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
+							}
+						}
+						break;
+				}
+			},
+
+			sign_in_submit_listener: function (e) {
+				if (e.target.id === 'sign-in') {
+					var username = document.getElementById('username').value.trim();
+					var password = document.getElementById('password').value.trim();
+
+					e.preventDefault();
+
+					if (!username) {
+						page.showError('Please enter a username');
+					} else if (!password) {
+						page.showError('Please enter a password');
+					} else {
+						page.hideError();
+						page.showLoading();
+						self.login(username, password);
+					}
+				}
 			},
 
 			/**
@@ -183,17 +215,25 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 
 				return function (next, force) {
 					if (storage === null || force === true) {
-						get(path, function (data) {
+						ajax('get', path, function (err, data) {
+							if (err) {
+								if (typeof next === 'function') {
+									next(err);
+								}
+
+								return;
+							}
+
 							if (typeof massager === 'function') {
 								storage = massager(data);
 							} else {
 								storage = data;
 							}
 
-							if (typeof next === 'function') { next(storage); }
+							if (typeof next === 'function') { next(null, storage); }
 						});
 					} else {
-						if (typeof next === 'function') { next(storage); }
+						if (typeof next === 'function') { next(null, storage); }
 					}
 				};
 			},
@@ -209,7 +249,12 @@ define(['jquery', 'config', 'page'], function($, config, page) {
 				var data = static_data || {};
 
 				return function (next) {
-					get_function(function (got_data) {
+					get_function(function (err, got_data) {
+						if (err) {
+							console.log('Error needs to be handled', err);
+							return;
+						}
+
 						data[template_id] = got_data;
 						page.replaceWithTemplate(template_id, data, next);
 					});

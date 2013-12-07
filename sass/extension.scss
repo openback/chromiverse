@@ -88,17 +88,15 @@ header {
 	width: 100%;
 }
 
-p.error {
+#error {
 	background-color: gray;
 	color: white;
-	margin-bottom: 1em;
-	padding: 3px;
+	height: 0;
+	max-height: 400px;
+	overflow: hidden;
 	text-align: center;
 	text-transform: uppercase;
-
-	&.none {
-		display: none;
-	}
+	-webkit-transition: all 0.25s ease-out;
 }
 
 #sign-in input {

@@ -340,92 +340,90 @@ header {
 }
 
 /* line 91, ../sass/extension.scss */
-p.error {
+#error {
   background-color: gray;
   color: white;
-  margin-bottom: 1em;
-  padding: 3px;
+  height: 0;
+  max-height: 400px;
+  overflow: hidden;
   text-align: center;
   text-transform: uppercase;
-}
-/* line 99, ../sass/extension.scss */
-p.error.none {
-  display: none;
+  -webkit-transition: all 0.25s ease-out;
 }
 
-/* line 104, ../sass/extension.scss */
+/* line 102, ../sass/extension.scss */
 #sign-in input {
   display: block;
   margin: 0;
   padding: 3px;
   width: 100%;
 }
-/* line 111, ../sass/extension.scss */
+/* line 109, ../sass/extension.scss */
 #sign-in input[type=text], #sign-in input[type=password] {
   border: 1px solid #aaa;
 }
-/* line 115, ../sass/extension.scss */
+/* line 113, ../sass/extension.scss */
 #sign-in input[type=password] {
   border-top-width: 0;
 }
-/* line 119, ../sass/extension.scss */
+/* line 117, ../sass/extension.scss */
 #sign-in input[type=submit] {
   border: none;
   background-color: #1989ff;
   color: white;
   margin-top: 1em;
 }
-/* line 126, ../sass/extension.scss */
+/* line 124, ../sass/extension.scss */
 #sign-in input[type=submit]:hover, #sign-in input[type=submit]:focus {
   background-color: #095fae;
   outline: 0;
 }
 
-/* line 133, ../sass/extension.scss */
+/* line 131, ../sass/extension.scss */
 nav {
   margin-bottom: 10px;
   font-size: 0.75em;
 }
-/* line 137, ../sass/extension.scss */
+/* line 135, ../sass/extension.scss */
 nav li {
   background-color: #fefefe;
   border: 1px solid #ddd;
   display: inline-block;
   width: 20%;
 }
-/* line 143, ../sass/extension.scss */
+/* line 141, ../sass/extension.scss */
 nav li + li:not(:nth-child(6)) {
   border-left: none;
 }
-/* line 147, ../sass/extension.scss */
+/* line 145, ../sass/extension.scss */
 nav li:nth-child(n + 6) {
   border-top: none;
 }
-/* line 151, ../sass/extension.scss */
+/* line 149, ../sass/extension.scss */
 nav li a {
   display: block;
   padding: 4px 0;
   text-align: center;
 }
-/* line 157, ../sass/extension.scss */
+/* line 155, ../sass/extension.scss */
 nav li a:link, nav li a:visited {
   color: #343638;
 }
-/* line 161, ../sass/extension.scss */
+/* line 159, ../sass/extension.scss */
 nav li a:hover {
   color: #095fae;
 }
-/* line 165, ../sass/extension.scss */
+/* line 163, ../sass/extension.scss */
 nav li a.active {
   background-color: #095fae;
   color: white;
 }
-/* line 169, ../sass/extension.scss */
+/* line 167, ../sass/extension.scss */
 nav li a.active:hover {
   cursor: default;
 }
 
-/* line 177, ../sass/extension.scss */
+/* line 175, ../sass/extension.scss */
 .profile-image {
   -webkit-border-radius: 26px;
   -moz-border-radius: 26px;
@@ -438,7 +436,7 @@ nav li a.active:hover {
   width: 50px;
 }
 
-/* line 185, ../sass/extension.scss */
+/* line 183, ../sass/extension.scss */
 .user-card {
   -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
@@ -448,13 +446,13 @@ nav li a.active:hover {
   padding: 0 0 10px;
   position: relative;
 }
-/* line 192, ../sass/extension.scss */
+/* line 190, ../sass/extension.scss */
 .user-card .profile-image {
   left: 20px;
   position: absolute;
   top: 50px;
 }
-/* line 198, ../sass/extension.scss */
+/* line 196, ../sass/extension.scss */
 .user-card .logout {
   background-color: #fefefe;
   display: inline-block;
@@ -463,23 +461,23 @@ nav li a.active:hover {
   right: 0;
   top: 0;
 }
-/* line 207, ../sass/extension.scss */
+/* line 205, ../sass/extension.scss */
 .user-card .cover_image {
   height: 83px;
   width: 100%;
 }
-/* line 212, ../sass/extension.scss */
+/* line 210, ../sass/extension.scss */
 .user-card .about {
   color: #c3c3c3;
   font-size: 0.9em;
   margin: 5px 0 5px 85px;
 }
-/* line 218, ../sass/extension.scss */
+/* line 216, ../sass/extension.scss */
 .user-card .username {
   color: black;
   font-size: 1.2em;
 }
-/* line 224, ../sass/extension.scss */
+/* line 222, ../sass/extension.scss */
 .user-card .location:before {
   text-indent: -119988px;
   overflow: hidden;
@@ -496,7 +494,7 @@ nav li a.active:hover {
   top: 3px;
 }
 
-/* line 236, ../sass/extension.scss */
+/* line 234, ../sass/extension.scss */
 .thing,
 .collection {
   -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
@@ -508,7 +506,7 @@ nav li a.active:hover {
   overflow: hidden;
   position: relative;
 }
-/* line 244, ../sass/extension.scss */
+/* line 242, ../sass/extension.scss */
 .thing .profile-image,
 .collection .profile-image {
   -webkit-border-radius: 31px;
@@ -522,7 +520,7 @@ nav li a.active:hover {
   top: 7px;
   width: 60px;
 }
-/* line 253, ../sass/extension.scss */
+/* line 251, ../sass/extension.scss */
 .thing .details,
 .collection .details {
   font-size: 0.8em;
@@ -530,7 +528,7 @@ nav li a.active:hover {
   padding: 5px 85px 5px 75px;
   width: 100%;
 }
-/* line 259, ../sass/extension.scss */
+/* line 257, ../sass/extension.scss */
 .thing .details .creator,
 .collection .details .creator {
   position: absolute;
@@ -538,7 +536,7 @@ nav li a.active:hover {
   left: 0;
   padding: 0 0 5px 75px;
 }
-/* line 266, ../sass/extension.scss */
+/* line 264, ../sass/extension.scss */
 .thing .details .thumbnail,
 .collection .details .thumbnail {
   position: absolute;
@@ -546,25 +544,25 @@ nav li a.active:hover {
   right: 0;
 }
 
-/* line 275, ../sass/extension.scss */
+/* line 273, ../sass/extension.scss */
 .thing + .thing,
 .collection + .collection {
   border-top-width: 0;
 }
 
-/* line 279, ../sass/extension.scss */
+/* line 277, ../sass/extension.scss */
 .collections .thumbnail {
   width: 75px;
 }
-/* line 282, ../sass/extension.scss */
+/* line 280, ../sass/extension.scss */
 .collections .thumbnail.shift-1 {
   right: -20px;
 }
-/* line 286, ../sass/extension.scss */
+/* line 284, ../sass/extension.scss */
 .collections .thumbnail.shift-2 {
   right: -40px;
 }
-/* line 290, ../sass/extension.scss */
+/* line 288, ../sass/extension.scss */
 .collections .thumbnail.shift-3 {
   right: -60px;
 }

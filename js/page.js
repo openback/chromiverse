@@ -1,12 +1,12 @@
-define(['jquery', 'underscore', 'config'], function ($, _, config) {
+define(['underscore', 'config'], function (_, config) {
 	"use strict";
 
 	var Page = (function () {
 		var self;
-		var $error;
 		var errorTimeout;
-		var $loading_screen;
-		var $content;
+		var error;
+		var loading_screen;
+		var content;
 		var templates = [];
 
 		var Page = function () {
@@ -17,20 +17,21 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 			constructor: Page,
 			initialize: function () {
 				self = this;
+				content = document.getElementById('content');
+				error = document.getElementById('error');
+				loading_screen = document.getElementById('loading-screen');
+			},
 
-				$(document).ready(function () {
-					$content = $('#content');
-					$error = $('p.error');
-					$loading_screen = $('#loading-screen');
-				});
+			onReady: function(fn) {
+				document.addEventListener('DOMContentLoaded', fn, false);
 			},
 
 			showLoading: function() {
-				$loading_screen.addClass('show');
+				self.addClass(loading_screen, 'show');
 			},
 
 			hideLoading: function() {
-				$loading_screen.removeClass('show');
+				self.removeClass(loading_screen, 'show');
 			},
 
 			showError: function (message, hide_timeout) {
@@ -38,17 +39,20 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 					clearTimeout(errorTimeout);
 				}
 
-				$error.stop().html(message).slideDown('fast');
+				error.innerHTML = message;
+				error.style.height = '1.5em';
+				error.style.padding = '3px 0 3px 0';
+				error.style.marginBottom = '1em';
 
 				if (hide_timeout) {
-					errorTimeout = setTimeout(function () {
-						$error.stop().slideUp('slow');
-					}, 4000);
+					errorTimeout = setTimeout(self.hideError, 4000);
 				}
 			},
 
 			hideError: function () {
-				$error.stop().slideUp('fast');
+				error.style.marginBottom = '0';
+				error.style.padding = '0';
+				error.style.height = '0';
 			},
 
 			/**
@@ -68,7 +72,7 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 			 * @return function Compiled underscore.js template
 			 */
 			getCompiledTemplate: function(template_id) {
-				templates[template_id] = templates[template_id] || _.template($('#' + template_id + '-template').html());
+				templates[template_id] = templates[template_id] || _.template(document.getElementById(template_id + '-template').innerHTML);
 
 				return templates[template_id];
 			},
@@ -93,9 +97,51 @@ define(['jquery', 'underscore', 'config'], function ($, _, config) {
 
 				var compiled = self.getCompiledTemplate(template_id);
 
-				$content.html(compiled(data, settings));
+				content.innerHTML = compiled(data, settings);
 
 				if (typeof next === 'function') { next(); }
+			},
+
+			/**
+			 * Check if the HTMLElement has the specified selector (tag, class, or id) as a parent
+			 * @param HTMLElement The child to start at
+			 * @param string The single id, class, or tagName to search for
+			 * @return HTMLElement|false The found parent or false
+			 */
+			hasParent: function(el, selector) {
+				var prop = null;
+
+				if (selector.charAt(0) === '#') {
+					prop = 'id';
+					selector = selector.slice(1);
+				} else if (selector.charAt(0) === '.') {
+					prop = 'className';
+					selector = selector.slice(1);
+				} else {
+					prop = 'tagName';
+					selector = selector.toUpperCase();
+				}
+
+				while (el.parentElement && el.parentElement.tagName !== 'HTML') {
+					el = el.parentElement;
+
+					if (el[prop] === selector) {
+						return el;
+					}
+				}
+
+				return false;
+			},
+
+			addClass: function(el, class_name) {
+				var classes = el.className.split(' ');
+				classes.push(class_name);
+				el.className = _.uniq(classes).join(' ').trim();
+			},
+
+			removeClass: function(el, class_name) {
+				var classes = el.className.split(' ');
+				el.className = _.without(classes, class_name).join(' ').trim();
 			}
 		};
 
