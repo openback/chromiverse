@@ -18,6 +18,11 @@ define(['config', 'page'], function(config, page) {
 			var req = new XMLHttpRequest();
 			var url;
 
+			if (typeof payload === 'function') {
+				next = payload;
+				payload = null;
+			}
+
 			if (path.charAt(0) === '/') {
 				if (!access_token) {
 					return next('Not authorized');
@@ -26,11 +31,6 @@ define(['config', 'page'], function(config, page) {
 				url = config.api_host.concat(path, '?access_token=', access_token);
 			} else {
 				url = path;
-			}
-
-			if (typeof payload === 'function') {
-				next = payload;
-				payload = null;
 			}
 
 			req.onreadystatechange = function () {
