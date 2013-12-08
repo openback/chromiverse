@@ -25,7 +25,7 @@ define(['config', 'page'], function(config, page) {
 
 			if (path.charAt(0) === '/') {
 				if (!access_token) {
-					if (next) {
+					if (typeof next === 'function') {
 						return next('Not authorized');
 					}
 
@@ -41,20 +41,22 @@ define(['config', 'page'], function(config, page) {
 				var err = null;
 				var response = null;
 
-				if (req.readyState === 4) {
-					if (next) {
-						if (req.status === 200) {
-							try {
-								response = JSON.parse(req.response);
-							} catch (e) {
-								err = 'Invalid JSON';
-							}
-						} else {
-							err = req.responseText;
-						}
+				if (typeof next !== 'function') {
+					return;
+				}
 
-						next(err, response);
+				if (req.readyState === 4) {
+					if (req.status === 200) {
+						try {
+							response = JSON.parse(req.response);
+						} catch (e) {
+							err = 'Invalid JSON';
+						}
+					} else {
+						err = req.responseText;
 					}
+
+					next(err, response);
 				}
 			};
 
