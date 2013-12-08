@@ -13,11 +13,20 @@ define(['config', 'page'], function(config, page) {
 		 * @param path string Endpoint path, including leading slash if for API
 		 * @param payload Optional object Data to be sent
 		 * @param next function Callback
-		 *  TODO: If it's an API call and we don't have a token, crap out
 		 */
 		var ajax = function(method, path, payload, next) {
-			var url = (path.charAt(0) === '/') ?  config.api_host.concat(path, '?access_token=', access_token) : path;
 			var req = new XMLHttpRequest();
+			var url;
+
+			if (path.charAt(0) === '/') {
+				if (!access_token) {
+					return next('Not authorized');
+				}
+
+				url = config.api_host.concat(path, '?access_token=', access_token);
+			} else {
+				url = path;
+			}
 
 			if (typeof payload === 'function') {
 				next = payload;
@@ -28,7 +37,11 @@ define(['config', 'page'], function(config, page) {
 				if (req.readyState === 4) {
 					if (next) {
 						if (req.status === 200) {
-							next(null, JSON.parse(req.response));
+							try {
+								next(null, JSON.parse(req.response));
+							} catch (e) {
+								next('Invalid JSON');
+							}
 						} else {
 							next(req.responseText);
 						}
