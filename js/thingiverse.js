@@ -25,7 +25,11 @@ define(['config', 'page'], function(config, page) {
 
 			if (path.charAt(0) === '/') {
 				if (!access_token) {
-					return next('Not authorized');
+					if (next) {
+						return next('Not authorized');
+					}
+
+					return;
 				}
 
 				url = config.api_host.concat(path, '?access_token=', access_token);
@@ -34,17 +38,22 @@ define(['config', 'page'], function(config, page) {
 			}
 
 			req.onreadystatechange = function () {
+				var err = null;
+				var response = null;
+
 				if (req.readyState === 4) {
 					if (next) {
 						if (req.status === 200) {
 							try {
-								next(null, JSON.parse(req.response));
+								response = JSON.parse(req.response);
 							} catch (e) {
-								next('Invalid JSON');
+								err = 'Invalid JSON';
 							}
 						} else {
-							next(req.responseText);
+							err = req.responseText;
 						}
+
+						next(err, response);
 					}
 				}
 			};
