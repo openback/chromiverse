@@ -10,7 +10,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 			"1":  "view",
 			"2":  "download",
 			"3":  "comment",
-			"4":  "publish",      // Deprecated
+			"4":  "publish",
 			"5":  "make",
 			"6":  "like",
 			"7":  "unlike",
@@ -150,7 +150,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 				self.showUser        = self.makeView('user'       , self.getUser,        { 'nav': 'user'});
 
 				// Sets the default view to display when logged in
-				self.defaultView = self.showUser;
+				self.defaultView = self.showDashboard;
 				content = document.getElementById('content');
 
 				// Set up some underscore template helpers
@@ -183,7 +183,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 					formatTime: function(time_string, short_words) {
 						var t = new Date(time_string);
             var datediff = (Date.now() - t)/1000;
-						var min =   Math.floor(datediff / (60));
+						var mins =   Math.floor(datediff / (60));
 						var hours = Math.floor(datediff / (60 * 60));
 						var days =  Math.floor(datediff / (60 * 60 * 24));
 
@@ -192,17 +192,16 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 								return 'just now';
 							}
 
-							return datediff + ' ' + (short_words ? 'sec':'second') + (datediff > 1 ? 's' : '') +' ago';
-						} else if (min < 60) {
-							return min + ' ' + (short_words ? 'min':'minute') + (min > 1 ? 's' : '') +' ago';
+							return datediff + ' ' + this.pluralize((short_words ? 'sec':'second'), datediff) + ' ago';
+						} else if (mins < 60) {
+							return mins + ' ' + this.pluralize((short_words ? 'min':'minute'), mins) +' ago';
 						} else if (hours < 24) {
-							return hours + ' ' + (short_words ? 'hr':'hour') + (hours > 1 ? 's' : '') +' ago';
+							return hours + ' ' + this.pluralize((short_words ? 'hr':'hour'), hours) +' ago';
 						} else if (days < 7) {
-							return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+							return days + ' ' + this.pluralize('day', days) + ' ago';
 						}
 
 						return t.toDateString().slice(4);
-
 					}
 				} );
 

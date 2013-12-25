@@ -25,6 +25,12 @@ require(['thingiverse', 'underscore', 'underscore_template_helpers'], function (
 		// if and only if
 		iff: function(condition, outputString) {
 			return condition ? outputString : "";
+		},
+
+		pluralize: function(word, count, suffix) {
+			suffix = typeof suffix !== 'undefined' ? suffix : 's';
+
+			return (count === 1) ? word : word + suffix;
 		}
 	});
 
