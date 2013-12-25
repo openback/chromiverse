@@ -1,4 +1,4 @@
-define(['config', 'page'], function(config, page) {
+define(['config', 'page', 'underscore', 'underscore_template_helpers'], function(config, page, _) {
 	"use strict";
 
 	var Thingiverse = (function () {
@@ -6,6 +6,38 @@ define(['config', 'page'], function(config, page) {
 		var registered_events = false;
 		var access_token   = null;
 		var content        = null;
+		var EVENT_TYPES = {
+			"1":  "view",
+			"2":  "download",
+			"3":  "comment",
+			"4":  "publish",      // Deprecated
+			"5":  "make",
+			"6":  "like",
+			"7":  "unlike",
+			"8":  "collect",
+			"9":  "derive",
+			"10": "feature",
+			"11": "follow",
+			"12": "unfollow",
+			"13": "update",       // Deprecated
+			"14": "authorize",
+			"15": "unauthorize",
+			"16": "uncollect",
+			"17": "uncomment",
+			"18": "unmake",
+			"19": "underive",
+			"20": "unfeature"
+		};
+
+		var EVENT_TARGET_TYPES = {
+			"1": "user",
+			"2": "thing",
+			"3": "collection",
+			"4": "app",
+			"5": "make",
+			"6": "category",
+			"7": "tag"
+		};
 
 		/**
 		 * Make an ajax call to an API endpoint or URL
@@ -114,6 +146,17 @@ define(['config', 'page'], function(config, page) {
 				// Sets the default view to display when logged in
 				self.defaultView = self.showUser;
 				content = document.getElementById('content');
+
+				// Set ip some underscore template helpers
+				_.addTemplateHelpers({
+					drawEvent: function(event_type, data) {
+						switch (EVENT_TYPES[event_type]) {
+							case 'make':
+								return data;
+						}
+					}
+				} );
+
 				self.registerEvents();
 			},
 
