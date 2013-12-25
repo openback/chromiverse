@@ -39,6 +39,12 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 			"7": "tag"
 		};
 
+		var KNOWN_EVENT_TYPES = [
+			'publish',
+			'make',
+			'feature'
+		];
+
 		/**
 		 * Make an ajax call to an API endpoint or URL
 		 * @param string method Normally 'GET' or 'POST'
@@ -147,13 +153,56 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 				self.defaultView = self.showUser;
 				content = document.getElementById('content');
 
-				// Set ip some underscore template helpers
+				// Set up some underscore template helpers
 				_.addTemplateHelpers({
-					drawEvent: function(event_type, data) {
-						switch (EVENT_TYPES[event_type]) {
-							case 'make':
-								return data;
+					drawEvent: function(event_data) {
+						var event_name = self.getEventName(event_data.type);
+						var template = (KNOWN_EVENT_TYPES.indexOf(event_name) === -1) ?
+							page.getCompiledTemplate('event-unknown') :
+							page.getCompiledTemplate('event-' + event_name);
+						return template(event_data);
+					},
+					
+					getImageSize: function(image_type, image_size, sizes) {
+						var large_url = null;
+
+						for (var i = 0; i < sizes.length; i++) {
+							if (sizes[i].type === image_type && sizes[i].size === image_size) {
+								return sizes[i].url;
+							}
+
+							// In case we don't find it, return the first large URL.
+							if (sizes[i].size === 'large' && ! large_url) {
+								large_url = sizes[i].url;
+							}
 						}
+
+						return large_url;
+					},
+
+					formatTime: function(time_string, short_words) {
+						var t = new Date(time_string);
+            var datediff = (Date.now() - t)/1000;
+						var min =   Math.floor(datediff / (60));
+						var hours = Math.floor(datediff / (60 * 60));
+						var days =  Math.floor(datediff / (60 * 60 * 24));
+
+						if (datediff < 60) { // seconds
+							if (datediff <= 10) {
+								return 'just now';
+							}
+
+							return datediff + ' ' + (short_words ? 'sec':'second') + (datediff > 1 ? 's' : '') +' ago';
+						} else if (min < 60) {
+							return min + ' ' + (short_words ? 'min':'minute') + (min > 1 ? 's' : '') +' ago';
+						} else if (hours < 24) {
+							return hours + ' ' + (short_words ? 'hr':'hour') + (hours > 1 ? 's' : '') +' ago';
+						} else if (days < 7) {
+							return days + ' day' + (days > 1 ? 's' : '') + ' ago';
+						}
+
+						return t.toDateString().slice(4);
+
 					}
 				} );
 
@@ -342,6 +391,14 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 
 			showLogin: function(next) {
 				page.replaceWithTemplate('login', null, next);
+			},
+
+			getTargetName: function(type) {
+				return EVENT_TARGET_TYPES[type];
+			},
+
+			getEventName: function(type) {
+				return EVENT_TYPES[type];
 			}
 		};
 

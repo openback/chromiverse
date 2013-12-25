@@ -181,11 +181,7 @@ nav {
 }
 
 .user-card {
-  @include box-shadow(0px 1px 1px rgba(0,0,0,0.25));
-  background-color: $box-bg;
-  border: 1px solid $border-grey;
   padding: 0 0 10px;
-	position: relative;
 
 	.profile-image {
 		left: 20px;
@@ -230,26 +226,29 @@ nav {
 	}
 }
 
-.thing,
-.collection {
+.box {
   @include box-shadow(0px 1px 1px rgba(0,0,0,0.25));
   background-color: $box-bg;
   border: 1px solid $border-grey;
-	height: 75px;
 	overflow: hidden;
 	position: relative;
 
-	.profile-image {
-		@include border-radius(31px);
-		height: 60px;
-		left: 7px;
-		position: absolute;
-		top: 7px;
-		width: 60px;
+	+ .box {
+		border-top-width: 0;
 	}
+}
 
+.thing,
+.collection,
+.event {
+	font-size: 0.8em;
+	height: 75px;
+}
+
+.thing,
+.collection,
+.event {
 	.details {
-		font-size: 0.8em;
 		overflow: hidden;
 		padding: 5px 85px 5px 75px;
 		width: 100%;
@@ -265,14 +264,20 @@ nav {
 			position: absolute;;
 			top: 0;
 			right: 0;
+			width: 75px;
 		}
+	}
+
+	.profile-image {
+		@include border-radius(31px);
+		height: 60px;
+		left: 6px;
+		position: absolute;
+		top: 6px;
+		width: 60px;
 	}
 }
 
-.thing + .thing,
-.collection + .collection {
-	border-top-width: 0;
-}
 .collections {
 	.thumbnail {
 		width: 75px;
@@ -288,5 +293,31 @@ nav {
 		&.shift-3 {
 			right: -60px;
 		}	
+	}
+}
+
+.event {
+	.details {
+		height: 75px;
+		padding: 5px 85px 5px 35px;
+		position: absolute;
+		top: 0;
+
+		time {
+			display: block;
+			font-size: 0.9em;
+		}
+	}
+
+	// Set up our icons
+	$event_types: publish make feature like follow;
+
+	@each $event_type in $event_types {
+		&.#{$event_type} {
+			.icon {
+				@include sprite-replace-text($icons, $event_type);
+				margin: 10px;
+			}
+		}
 	}
 }

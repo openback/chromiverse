@@ -16,7 +16,7 @@
 		</script>
 		<script id="user-template" type="text/template">
 			<%= nav %>
-			<div class="user-card">
+			<div class="user-card box">
 				<a class="logout"> X </a>
 				<img class="cover_image" src="<% if (user.display_small) { %><%= user.display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
 				<div class="profile-image"><img src="<%= user.thumbnail %>"></div>
@@ -32,11 +32,11 @@
 				<% if (!things.length) { %><p>Sorry, you have no designs!</p><% } %>
 				<% if (typeof header !== 'undefined' && header) { %><h1><%= header %></h1><% } %>
 				<% _.each(things, function(thing) { %>
-				<div class="thing" data-thing-id="<%= thing.id %>">
+				<div class="thing box" data-thing-id="<%= thing.id %>">
 					<% if (thing.creator) { %>
-					<a class="profile-image" href="<%= thing.creator.public_url %>"><img src="<%= thing.creator.thumbnail %>" alt="<%= thing.creator.name %>"></a>
+						<a class="profile-image" href="<%= thing.creator.public_url %>"><img src="<%= thing.creator.thumbnail %>" alt="<%= thing.creator.name %>"></a>
 					<% } else { %>
-					<div class="profile-image">"><img src="/images/default/avatar.jpg" alt="Unknown"></a>
+						<div class="profile-image">"><img src="/images/default/avatar.jpg" alt="Unknown"></a>
 					<% } %>
 					<div class="details">
 						<span class="name"><%= thing.name %></span>
@@ -54,7 +54,7 @@
 			<div class="collections">
 				<% if (!collections.length) { %><p>Sorry, you have no collections!</p><% } %>
 				<% _.each(collections, function(collection) { %>
-				<div class="collection" data-collection-id="<%= collection.id %>">
+				<div class="collection box" data-collection-id="<%= collection.id %>">
 					<% if (collection.creator) { %>
 					<a class="profile-image" href="<%= collection.creator.public_url %>"><img src="<%= collection.creator.thumbnail %>" alt="<%= collection.creator.name %>"></a>
 					<% } else { %>
@@ -76,11 +76,56 @@
 			<%= nav %>
 			<% if (!dashboard || !dashboard.length) { %><p>Sorry, your dashboard is empty!</p><% } %>
 			<div class="dashboard">
-				<% _.each(dashboard, function(event) { %>
-				<div class="event">
-					<%= event.message %>
-				</div>
+				<% _.each(dashboard, function(event_data) { %>
+					<%= drawEvent(event_data) %>
 				<% }); %>
+			</div>
+		</script>
+		<script id="event-make-template" type="text/template">
+			<div class="event make box" data-id="<%= id %>">
+				<span class="icon"></span>
+				<div class="details">
+					<time datetime="<%= time %>"><%= formatTime(time) %></time>
+					<%= message %>
+					<% if (targets[0].default_image) { %>
+						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+					<% } else { %>
+						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+					<% } %>
+				</div>
+			</div>
+		</script>
+		<script id="event-feature-template" type="text/template">
+			<div class="event feature box" data-id="<%= id %>">
+				<span class="icon"></span>
+				<div class="details">
+					<time datetime="<%= time %>"><%= formatTime(time) %></time>
+					<%= message %>
+					<% if (targets[0].default_image) { %>
+						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+					<% } else { %>
+						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+					<% } %>
+				</div>
+			</div>
+		</script>
+		<script id="event-publish-template" type="text/template">
+			<div class="event publish box" data-id="<%= id %>">
+				<span class="icon"></span>
+				<div class="details">
+					<time datetime="<%= time %>"><%= formatTime(time) %></time>
+					<%= message %>
+					<% if (targets[0].default_image) { %>
+						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+					<% } else { %>
+						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+					<% } %>
+				</div>
+			</div>
+		</script>
+		<script id="event-unknown-template" type="text/template">
+			<div class="event unknown box" data-id="<%= id %>">
+				<%= message %>
 			</div>
 		</script>
 		<link rel="stylesheet" href="css/extension.css">
