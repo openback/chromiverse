@@ -46,14 +46,15 @@ define(['config', 'page'], function(config, page) {
 				}
 
 				if (req.readyState === 4) {
-					if (req.status === 200) {
-						try {
-							response = JSON.parse(req.response);
-						} catch (e) {
-							err = 'Invalid JSON';
-						}
-					} else {
-						err = req.responseText;
+					try {
+						response = JSON.parse(req.response);
+					} catch (e) {
+						response = req.response;
+					}
+
+					if (req.status !== 200) {
+						err = response;
+						response = null;
 					}
 
 					next(err, response);
@@ -189,12 +190,7 @@ define(['config', 'page'], function(config, page) {
 						if (e.target.className === 'logout') {
 							e.preventDefault();
 
-							chrome.storage.sync.clear(function () {
-								self.checkLogin(function (next) {
-									page.showError('You have been logged out', true);
-									if (typeof next === 'function') { next(); }
-								});
-							});
+							self.logout();
 						} else if (page.hasParent(e.target, 'nav')) {
 							var class_name = e.target.className;
 
@@ -206,6 +202,17 @@ define(['config', 'page'], function(config, page) {
 						}
 						break;
 				}
+			},
+
+			logout: function () {
+				access_token = null;
+
+				chrome.storage.sync.clear(function () {
+					self.checkLogin(function (next) {
+						page.showError('You have been logged out', true);
+						if (typeof next === 'function') { next(); }
+					});
+				});
 			},
 
 			sign_in_submit_listener: function (e) {
@@ -275,6 +282,11 @@ define(['config', 'page'], function(config, page) {
 				return function (next) {
 					get_function(function (err, got_data) {
 						if (err) {
+							if (err.error === 'Unauthorized' && access_token) {
+								// We probably have a bad token, so force a 'logout'
+								self.logout();
+							}
+
 							console.log('Error needs to be handled', err);
 							return;
 						}
