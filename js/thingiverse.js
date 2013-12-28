@@ -313,7 +313,7 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 
 				return function (next, force) {
 					if (storage === null || force === true) {
-						MinPubSub.publish('/thingiverse/load/start', ['Signing in...']);
+						MinPubSub.publish('/thingiverse/load/start', ['Loading...']);
 
 						ajax('get', path, function (err, data) {
 							if (!err) {
