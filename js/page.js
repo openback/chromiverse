@@ -1,4 +1,4 @@
-define(['underscore', 'config'], function (_, config) {
+define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 	"use strict";
 
 	var Page = (function () {
@@ -26,6 +26,9 @@ define(['underscore', 'config'], function (_, config) {
 				error = document.getElementById('error');
 				loading_screen = document.getElementById('loading-screen');
 				loading_screen_text = document.getElementById('loading-screen-text');
+
+				MinPubSub.subscribe('/thingiverse/load/start', self.showLoading);
+				MinPubSub.subscribe('/thingiverse/load/done', self.hideLoading);
 			},
 
 			onReady: function(fn) {
@@ -40,7 +43,6 @@ define(['underscore', 'config'], function (_, config) {
 
 			hideLoading: function() {
 				var t = Date.now();
-				console.log(loading_shown_at, t - loading_shown_at);
 
 				if (t - loading_shown_at < LOADING_DISP_MIN_TIME) {
 					setTimeout(self.hideLoading, LOADING_DISP_MIN_TIME - (t - loading_shown_at));

@@ -1,4 +1,4 @@
-define(['config', 'page', 'underscore', 'underscore_template_helpers'], function(config, page, _) {
+define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helpers'], function(config, page, _, MinPubSub) {
 	"use strict";
 
 	var Thingiverse = (function () {
@@ -215,7 +215,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 				ajax('post', config.login_url, data, function (err, response) {
 					if (err) {
 						page.showError('There was a problem logging in');
-						page.hideLoading();
+						MinPubSub.publish('/thingiverse/load/done');
 						return;
 					}
 
@@ -223,7 +223,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 					chrome.storage.sync.set({'access_token': access_token}, function () {
 						if (chrome.runtime.lastError) {
 							page.showError(chrome.runtime.lastError.message);
-							page.hideLoading();
+							MinPubSub.publish('/thingiverse/load/done');
 						} else {
 							self.defaultView();
 						}
@@ -295,7 +295,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 						page.showError('Please enter a password');
 					} else {
 						page.hideError();
-						page.showLoading('Signing in...');
+						MinPubSub.publish('/thingiverse/load/start', ['Signing in...']);
 						self.login(username, password);
 					}
 				}
@@ -313,7 +313,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 
 				return function (next, force) {
 					if (storage === null || force === true) {
-						page.showLoading('Loading...');
+						MinPubSub.publish('/thingiverse/load/start', ['Signing in...']);
 
 						ajax('get', path, function (err, data) {
 							if (!err) {
@@ -357,7 +357,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 						var t = Date.now();
 						data[template_id] = got_data;
 						page.replaceWithTemplate(template_id, data, function (err) {
-							page.hideLoading();
+							MinPubSub.publish('/thingiverse/load/done');
 							if (typeof next === 'function') { next(err); }
 						});
 					});

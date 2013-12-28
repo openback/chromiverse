@@ -9,8 +9,9 @@ requirejs.config({
 		}
 	},
 	paths: {
-		underscore: 'underscore-min',
+		underscore: '/bower_components/underscore-amd/underscore-min',
 		underscore_template_helpers: 'underscore-template-helpers/underscore.template-helpers',
+		minpubsub: '/bower_components/minpubsub/minpubsub',
 		thingiverse: 'thingiverse',
 		page: 'page',
 		config: 'config'
