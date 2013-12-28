@@ -214,7 +214,7 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 
 				ajax('post', config.login_url, data, function (err, response) {
 					if (err) {
-						page.showError('There was a problem logging in');
+						MinpubSub.publish('/thingiverse/error', ['There was a problem logging in']);
 						MinPubSub.publish('/thingiverse/load/done');
 						return;
 					}
@@ -222,7 +222,7 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 					access_token = response.access_token;
 					chrome.storage.sync.set({'access_token': access_token}, function () {
 						if (chrome.runtime.lastError) {
-							page.showError(chrome.runtime.lastError.message);
+							MinpubSub.publish('/thingiverse/error', [chrome.runtime.lastError.message]);
 							MinPubSub.publish('/thingiverse/load/done');
 						} else {
 							self.defaultView();
@@ -276,7 +276,7 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 
 				chrome.storage.sync.clear(function () {
 					self.checkLogin(function (next) {
-						page.showError('You have been logged out', true);
+						MinPubSub.publish('/thingiverse/error', ['You have been logged out', true]);
 						if (typeof next === 'function') { next(); }
 					});
 				});
@@ -290,11 +290,10 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 					e.preventDefault();
 
 					if (!username) {
-						page.showError('Please enter a username');
+						MinPubSub.publish('/thingiverse/error', ['Please enter a username']);
 					} else if (!password) {
-						page.showError('Please enter a password');
+						MinPubSub.publish('/thingiverse/error', ['Please enter a password']);
 					} else {
-						page.hideError();
 						MinPubSub.publish('/thingiverse/load/start', ['Signing in...']);
 						self.login(username, password);
 					}

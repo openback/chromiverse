@@ -38,6 +38,7 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 			showLoading: function(message) {
 				loading_screen_text.innerHTML = (message) ? message: '';
 				self.addClass(loading_screen, 'show');
+				self.hideError();
 				loading_shown_at = Date.now();
 			},
 
