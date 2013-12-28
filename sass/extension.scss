@@ -49,6 +49,7 @@ h1 {
 
 #loading-screen {
   background-color: #f5f5f5;
+	color: white;
   cursor: wait;
 	display: none;
   height: 100%;
@@ -58,12 +59,17 @@ h1 {
   width: 100%;
   z-index: -1000;
 
-	.show {
+	&.show {
 		background-color: black;
 		display: block;
 		padding-top: 50px;
 		text-align: center;
 		z-index: 1000;
+	}
+
+	img {
+		vertical-align: middle;
+		margin-right: 1em;
 	}
 }
 

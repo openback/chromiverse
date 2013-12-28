@@ -178,30 +178,6 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 						}
 
 						return large_url;
-					},
-
-					formatTime: function(time_string, short_words) {
-						var t = new Date(time_string);
-            var datediff = (Date.now() - t)/1000;
-						var mins =   Math.floor(datediff / (60));
-						var hours = Math.floor(datediff / (60 * 60));
-						var days =  Math.floor(datediff / (60 * 60 * 24));
-
-						if (datediff < 60) { // seconds
-							if (datediff <= 10) {
-								return 'just now';
-							}
-
-							return datediff + ' ' + this.pluralize((short_words ? 'sec':'second'), datediff) + ' ago';
-						} else if (mins < 60) {
-							return mins + ' ' + this.pluralize((short_words ? 'min':'minute'), mins) +' ago';
-						} else if (hours < 24) {
-							return hours + ' ' + this.pluralize((short_words ? 'hr':'hour'), hours) +' ago';
-						} else if (days < 7) {
-							return days + ' ' + this.pluralize('day', days) + ' ago';
-						}
-
-						return t.toDateString().slice(4);
 					}
 				} );
 
@@ -319,7 +295,7 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 						page.showError('Please enter a password');
 					} else {
 						page.hideError();
-						page.showLoading();
+						page.showLoading('Signing in...');
 						self.login(username, password);
 					}
 				}
@@ -337,22 +313,18 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 
 				return function (next, force) {
 					if (storage === null || force === true) {
+						page.showLoading('Loading...');
+
 						ajax('get', path, function (err, data) {
-							if (err) {
-								if (typeof next === 'function') {
-									next(err);
+							if (!err) {
+								if (typeof massager === 'function') {
+									storage = massager(data);
+								} else {
+									storage = data;
 								}
-
-								return;
 							}
 
-							if (typeof massager === 'function') {
-								storage = massager(data);
-							} else {
-								storage = data;
-							}
-
-							if (typeof next === 'function') { next(null, storage); }
+							if (typeof next === 'function') { next(err, storage); }
 						});
 					} else {
 						if (typeof next === 'function') { next(null, storage); }
@@ -382,8 +354,12 @@ define(['config', 'page', 'underscore', 'underscore_template_helpers'], function
 							return;
 						}
 
+						var t = Date.now();
 						data[template_id] = got_data;
-						page.replaceWithTemplate(template_id, data, next);
+						page.replaceWithTemplate(template_id, data, function (err) {
+							page.hideLoading();
+							if (typeof next === 'function') { next(err); }
+						});
 					});
 				};
 			},

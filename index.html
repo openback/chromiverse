@@ -85,7 +85,7 @@
 			<div class="event make box" data-id="<%= id %>">
 				<span class="icon"></span>
 				<div class="details">
-					<time datetime="<%= time %>"><%= formatTime(time) %></time>
+					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
 						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
@@ -99,7 +99,7 @@
 			<div class="event feature box" data-id="<%= id %>">
 				<span class="icon"></span>
 				<div class="details">
-					<time datetime="<%= time %>"><%= formatTime(time) %></time>
+					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
 						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
@@ -113,7 +113,7 @@
 			<div class="event publish box" data-id="<%= id %>">
 				<span class="icon"></span>
 				<div class="details">
-					<time datetime="<%= time %>"><%= formatTime(time) %></time>
+					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
 						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
@@ -131,7 +131,10 @@
 		<link rel="stylesheet" href="css/extension.css">
 	</head>
 	<body>
-		<div id="loading-screen"><img src="images/loading.gif" alt="Loading" width="50" height="50"></div>
+		<div id="loading-screen">
+			<img src="images/loading.gif" alt="Loading" width="50" height="50">
+			<span id="loading-screen-text"></span>
+		</div>
 		<header>
 			<img id="logo" src="images/thingiverse-logo.png" alt="Thingiverse">
 			<p id="error"></p>

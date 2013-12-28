@@ -6,6 +6,11 @@ define(['underscore', 'config'], function (_, config) {
 		var errorTimeout;
 		var error;
 		var loading_screen;
+		var loading_screen_text;
+		// Used to force a short delay before hiding the loading screen to prevent flashing
+		var loading_shown_at = 0;
+		// Amount of time to force the loading screen to show for
+		var LOADING_DISP_MIN_TIME = 250;
 		var content;
 		var templates = [];
 
@@ -20,18 +25,28 @@ define(['underscore', 'config'], function (_, config) {
 				content = document.getElementById('content');
 				error = document.getElementById('error');
 				loading_screen = document.getElementById('loading-screen');
+				loading_screen_text = document.getElementById('loading-screen-text');
 			},
 
 			onReady: function(fn) {
 				document.addEventListener('DOMContentLoaded', fn, false);
 			},
 
-			showLoading: function() {
+			showLoading: function(message) {
+				loading_screen_text.innerHTML = (message) ? message: '';
 				self.addClass(loading_screen, 'show');
+				loading_shown_at = Date.now();
 			},
 
 			hideLoading: function() {
-				self.removeClass(loading_screen, 'show');
+				var t = Date.now();
+				console.log(loading_shown_at, t - loading_shown_at);
+
+				if (t - loading_shown_at < LOADING_DISP_MIN_TIME) {
+					setTimeout(self.hideLoading, LOADING_DISP_MIN_TIME - (t - loading_shown_at));
+				} else {
+					self.removeClass(loading_screen, 'show');
+				}
 			},
 
 			showError: function (message, hide_timeout) {
