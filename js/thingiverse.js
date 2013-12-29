@@ -3,9 +3,6 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 
 	var Thingiverse = (function () {
 		var self;
-		var registered_events = false;
-		var access_token   = null;
-		var content        = null;
 		var EVENT_TYPES = {
 			"1":  "view",
 			"2":  "download",
@@ -28,7 +25,6 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 			"19": "underive",
 			"20": "unfeature"
 		};
-
 		var EVENT_TARGET_TYPES = {
 			"1": "user",
 			"2": "thing",
@@ -38,12 +34,16 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 			"6": "category",
 			"7": "tag"
 		};
-
 		var KNOWN_EVENT_TYPES = [
 			'publish',
 			'make',
 			'feature'
 		];
+		// How long to cache each API call's data for
+		var API_CACHE_TIME = 5 * 60 * 1000;
+		var registered_events = false;
+		var access_token   = null;
+		var content        = null;
 
 		/**
 		 * Make an ajax call to an API endpoint or URL
@@ -309,13 +309,16 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 			makeGetter: function (path, massager) {
 				// Cache for the API call
 				var storage = null;
+				var last_call_time = 0;
 
 				return function (next, force) {
-					if (storage === null || force === true) {
+					if (force === true || (Date.now() - last_call_time > API_CACHE_TIME)) {
 						MinPubSub.publish('/thingiverse/load/start', ['Loading...']);
 
 						ajax('get', path, function (err, data) {
 							if (!err) {
+								last_call_time = Date.now();
+
 								if (typeof massager === 'function') {
 									storage = massager(data);
 								} else {
