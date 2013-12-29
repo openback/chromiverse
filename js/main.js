@@ -21,6 +21,16 @@ requirejs.config({
 require(['thingiverse', 'underscore', 'underscore_template_helpers'], function (thingiverse, _) {
 	"use strict";
 
+	// Helper functions for localStorage
+	Storage.prototype.setObject = function(key, value) {
+		this.setItem(key, JSON.stringify(value));
+	}
+
+	Storage.prototype.getObject = function(key) {
+		var value = this.getItem(key);
+		return value && JSON.parse(value);
+	}
+
 	// Add some helpers to underscore
 	_.addTemplateHelpers({
 		// if and only if

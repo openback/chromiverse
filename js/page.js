@@ -3,14 +3,17 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 
 	var Page = (function () {
 		var self;
-		var errorTimeout;
+		// Time after which we hide a displayed error
+		var ERROR_HIDE_AFTER =4000;
+		// Amount of time to force the loading screen to show for
+		var LOADING_DISP_MIN_TIME = 250;
+
 		var error;
+		var error_timeout;
 		var loading_screen;
 		var loading_screen_text;
 		// Used to force a short delay before hiding the loading screen to prevent flashing
 		var loading_shown_at = 0;
-		// Amount of time to force the loading screen to show for
-		var LOADING_DISP_MIN_TIME = 250;
 		var content;
 		var templates = [];
 
@@ -29,6 +32,7 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 
 				MinPubSub.subscribe('/thingiverse/load/start', self.showLoading);
 				MinPubSub.subscribe('/thingiverse/load/done', self.hideLoading);
+				MinPubSub.subscribe('/thingiverse/error', self.showError);
 			},
 
 			onReady: function(fn) {
@@ -53,8 +57,8 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 			},
 
 			showError: function (message, hide_timeout) {
-				if (errorTimeout) {
-					clearTimeout(errorTimeout);
+				if (error_timeout) {
+					clearTimeout(error_timeout);
 				}
 
 				error.innerHTML = message;
@@ -63,7 +67,7 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 				error.style.marginBottom = '1em';
 
 				if (hide_timeout) {
-					errorTimeout = setTimeout(self.hideError, 4000);
+					error_timeout = setTimeout(self.hideError, ERROR_HIDE_AFTER);
 				}
 			},
 

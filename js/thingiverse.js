@@ -1,4 +1,5 @@
-define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helpers'], function(config, page, _, MinPubSub) {
+define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helpers'], 
+function(config, page, _, MinPubSub) {
 	"use strict";
 
 	var Thingiverse = (function () {
@@ -188,15 +189,15 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 			 * Check if we already have a saved access_token and show the default view if so
 			 */
 			checkLogin: function(next) {
-				chrome.storage.sync.get('access_token', function (items) {
-					if (chrome.runtime.lastError || !items || !items.access_token) {
-						self.showLogin(next);
-						return;
-					}
+				var token = localStorage.getItem('access_token');
 
-					access_token = items.access_token;
-					self.defaultView(next);
-				});
+				if (!token) {
+					self.showLogin(next);
+					return;
+				}
+
+				access_token = token;
+				self.defaultView(next);
 			},
 
 			/**
@@ -213,6 +214,7 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 				data.append('password', password);
 
 				ajax('post', config.login_url, data, function (err, response) {
+					console.log(err,response);
 					if (err) {
 						MinpubSub.publish('/thingiverse/error', ['There was a problem logging in']);
 						MinPubSub.publish('/thingiverse/load/done');
@@ -220,14 +222,8 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 					}
 
 					access_token = response.access_token;
-					chrome.storage.sync.set({'access_token': access_token}, function () {
-						if (chrome.runtime.lastError) {
-							MinpubSub.publish('/thingiverse/error', [chrome.runtime.lastError.message]);
-							MinPubSub.publish('/thingiverse/load/done');
-						} else {
-							self.defaultView();
-						}
-					});
+					localStorage.setItem('access_token', access_token);
+					self.defaultView();
 				});
 			},
 
@@ -274,11 +270,11 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 			logout: function () {
 				access_token = null;
 
-				chrome.storage.sync.clear(function () {
-					self.checkLogin(function (next) {
-						MinPubSub.publish('/thingiverse/error', ['You have been logged out', true]);
-						if (typeof next === 'function') { next(); }
-					});
+				localStorage.clear();
+
+				self.checkLogin(function (next) {
+					MinPubSub.publish('/thingiverse/error', ['You have been logged out', true]);
+					if (typeof next === 'function') { next(); }
 				});
 			},
 
@@ -307,29 +303,26 @@ define(['config', 'page', 'underscore', 'minpubsub', 'underscore_template_helper
 			 * @return function
 			 */
 			makeGetter: function (path, massager) {
-				// Cache for the API call
-				var storage = null;
-				var last_call_time = 0;
-
 				return function (next, force) {
-					if (force === true || (Date.now() - last_call_time > API_CACHE_TIME)) {
+					var storage = localStorage.getObject(path) || { data: null, last_call_time: 0 };
+
+					if (force === true || (Date.now() - storage.last_call_time > API_CACHE_TIME)) {
 						MinPubSub.publish('/thingiverse/load/start', ['Loading...']);
 
 						ajax('get', path, function (err, data) {
 							if (!err) {
-								last_call_time = Date.now();
+								storage = {
+									last_call_time: Date.now(),
+									data: (typeof massager === 'function') ?  massager(data) : data
+								};
 
-								if (typeof massager === 'function') {
-									storage = massager(data);
-								} else {
-									storage = data;
-								}
+								localStorage.setObject(path, storage);
 							}
 
-							if (typeof next === 'function') { next(err, storage); }
+							if (typeof next === 'function') { next(err, storage.data); }
 						});
 					} else {
-						if (typeof next === 'function') { next(null, storage); }
+						if (typeof next === 'function') { next(null, storage.data); }
 					}
 				};
 			},
