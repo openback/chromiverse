@@ -18,7 +18,7 @@
 			<%= nav %>
 			<div class="user-card box">
 				<a class="logout"> X </a>
-				<img class="cover_image" src="<% if (user.display_small) { %><%= user.display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>" alt="cover image">
+				<div class="cover_image" style="background-image: url(<% if (user.display_small) { %><%= user.display_small %><% } else { %><%= '/images/default/user_cover_00.jpg' %><% } %>)"></div>
 				<div class="profile-image"><img src="<%= user.thumbnail %>"></div>
 				<div class="about">
 					<h2 class="username"><%= user.name %></h2>

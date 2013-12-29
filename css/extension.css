@@ -463,21 +463,23 @@ nav li a.active:hover {
 }
 /* line 207, ../sass/extension.scss */
 .user-card .cover_image {
+  background-position: 0 50%;
+  background-size: cover;
   height: 83px;
   width: 100%;
 }
-/* line 212, ../sass/extension.scss */
+/* line 214, ../sass/extension.scss */
 .user-card .about {
   color: #c3c3c3;
   font-size: 0.9em;
-  margin: 5px 0 5px 85px;
+  margin: 5px 0 5px 75px;
 }
-/* line 218, ../sass/extension.scss */
+/* line 220, ../sass/extension.scss */
 .user-card .username {
   color: black;
   font-size: 1.2em;
 }
-/* line 224, ../sass/extension.scss */
+/* line 226, ../sass/extension.scss */
 .user-card .location:before {
   text-indent: -119988px;
   overflow: hidden;
@@ -494,7 +496,7 @@ nav li a.active:hover {
   top: 3px;
 }
 
-/* line 235, ../sass/extension.scss */
+/* line 237, ../sass/extension.scss */
 .box {
   -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
@@ -504,12 +506,12 @@ nav li a.active:hover {
   overflow: hidden;
   position: relative;
 }
-/* line 242, ../sass/extension.scss */
+/* line 244, ../sass/extension.scss */
 .box + .box {
   border-top-width: 0;
 }
 
-/* line 249, ../sass/extension.scss */
+/* line 251, ../sass/extension.scss */
 .thing,
 .collection,
 .event {
@@ -517,7 +519,7 @@ nav li a.active:hover {
   height: 75px;
 }
 
-/* line 257, ../sass/extension.scss */
+/* line 259, ../sass/extension.scss */
 .thing .details,
 .collection .details,
 .event .details {
@@ -525,7 +527,7 @@ nav li a.active:hover {
   padding: 5px 85px 5px 75px;
   width: 100%;
 }
-/* line 262, ../sass/extension.scss */
+/* line 264, ../sass/extension.scss */
 .thing .details .creator,
 .collection .details .creator,
 .event .details .creator {
@@ -534,7 +536,7 @@ nav li a.active:hover {
   left: 0;
   padding: 0 0 5px 75px;
 }
-/* line 269, ../sass/extension.scss */
+/* line 271, ../sass/extension.scss */
 .thing .details .thumbnail,
 .collection .details .thumbnail,
 .event .details .thumbnail {
@@ -543,7 +545,7 @@ nav li a.active:hover {
   right: 0;
   width: 75px;
 }
-/* line 277, ../sass/extension.scss */
+/* line 279, ../sass/extension.scss */
 .thing .profile-image,
 .collection .profile-image,
 .event .profile-image {
@@ -559,36 +561,36 @@ nav li a.active:hover {
   width: 60px;
 }
 
-/* line 288, ../sass/extension.scss */
+/* line 290, ../sass/extension.scss */
 .collections .thumbnail {
   width: 75px;
 }
-/* line 291, ../sass/extension.scss */
+/* line 293, ../sass/extension.scss */
 .collections .thumbnail.shift-1 {
   right: -20px;
 }
-/* line 295, ../sass/extension.scss */
+/* line 297, ../sass/extension.scss */
 .collections .thumbnail.shift-2 {
   right: -40px;
 }
-/* line 299, ../sass/extension.scss */
+/* line 301, ../sass/extension.scss */
 .collections .thumbnail.shift-3 {
   right: -60px;
 }
 
-/* line 306, ../sass/extension.scss */
+/* line 308, ../sass/extension.scss */
 .event .details {
   height: 75px;
   padding: 5px 85px 5px 35px;
   position: absolute;
   top: 0;
 }
-/* line 312, ../sass/extension.scss */
+/* line 314, ../sass/extension.scss */
 .event .details time {
   display: block;
   font-size: 0.9em;
 }
-/* line 323, ../sass/extension.scss */
+/* line 325, ../sass/extension.scss */
 .event.publish .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -599,7 +601,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 323, ../sass/extension.scss */
+/* line 325, ../sass/extension.scss */
 .event.make .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -610,7 +612,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 323, ../sass/extension.scss */
+/* line 325, ../sass/extension.scss */
 .event.feature .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -621,7 +623,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 323, ../sass/extension.scss */
+/* line 325, ../sass/extension.scss */
 .event.like .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -632,7 +634,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 323, ../sass/extension.scss */
+/* line 325, ../sass/extension.scss */
 .event.follow .icon {
   text-indent: -119988px;
   overflow: hidden;

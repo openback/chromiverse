@@ -205,6 +205,8 @@ nav {
 	}
 
 	.cover_image {
+		background-position: 0 50%;
+		background-size: cover;
 		height: 83px;
 		width: 100%;
 	}
@@ -212,7 +214,7 @@ nav {
 	.about {
 		color: $dark-grey;
 		font-size: 0.9em;
-		margin: 5px 0 5px 85px;
+		margin: 5px 0 5px 75px;
 	}
 
 	.username {
