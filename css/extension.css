@@ -340,12 +340,13 @@ header {
 
 /* line 91, ../sass/extension.scss */
 #content {
+  min-height: 100px;
   padding-top: 0;
   position: relative;
   width: 100%;
 }
 
-/* line 97, ../sass/extension.scss */
+/* line 98, ../sass/extension.scss */
 #error {
   background-color: gray;
   color: white;
@@ -357,79 +358,79 @@ header {
   -webkit-transition: all 0.25s ease-out;
 }
 
-/* line 108, ../sass/extension.scss */
+/* line 109, ../sass/extension.scss */
 #sign-in input {
   display: block;
   margin: 0;
   padding: 3px;
   width: 100%;
 }
-/* line 115, ../sass/extension.scss */
+/* line 116, ../sass/extension.scss */
 #sign-in input[type=text], #sign-in input[type=password] {
   border: 1px solid #aaa;
 }
-/* line 119, ../sass/extension.scss */
+/* line 120, ../sass/extension.scss */
 #sign-in input[type=password] {
   border-top-width: 0;
 }
-/* line 123, ../sass/extension.scss */
+/* line 124, ../sass/extension.scss */
 #sign-in input[type=submit] {
   border: none;
   background-color: #1989ff;
   color: white;
   margin-top: 1em;
 }
-/* line 130, ../sass/extension.scss */
+/* line 131, ../sass/extension.scss */
 #sign-in input[type=submit]:hover, #sign-in input[type=submit]:focus {
   background-color: #095fae;
   outline: 0;
 }
 
-/* line 137, ../sass/extension.scss */
+/* line 138, ../sass/extension.scss */
 nav {
   margin-bottom: 10px;
   font-size: 0.75em;
 }
-/* line 141, ../sass/extension.scss */
+/* line 142, ../sass/extension.scss */
 nav li {
   background-color: #fefefe;
   border: 1px solid #ddd;
   display: inline-block;
   width: 20%;
 }
-/* line 147, ../sass/extension.scss */
+/* line 148, ../sass/extension.scss */
 nav li + li:not(:nth-child(6)) {
   border-left: none;
 }
-/* line 151, ../sass/extension.scss */
+/* line 152, ../sass/extension.scss */
 nav li:nth-child(n + 6) {
   border-top: none;
 }
-/* line 155, ../sass/extension.scss */
+/* line 156, ../sass/extension.scss */
 nav li a {
   display: block;
   padding: 4px 0;
   text-align: center;
 }
-/* line 161, ../sass/extension.scss */
+/* line 162, ../sass/extension.scss */
 nav li a:link, nav li a:visited {
   color: #343638;
 }
-/* line 165, ../sass/extension.scss */
+/* line 166, ../sass/extension.scss */
 nav li a:hover {
   color: #095fae;
 }
-/* line 169, ../sass/extension.scss */
+/* line 170, ../sass/extension.scss */
 nav li a.active {
   background-color: #095fae;
   color: white;
 }
-/* line 173, ../sass/extension.scss */
+/* line 174, ../sass/extension.scss */
 nav li a.active:hover {
   cursor: default;
 }
 
-/* line 181, ../sass/extension.scss */
+/* line 182, ../sass/extension.scss */
 .profile-image {
   -webkit-border-radius: 26px;
   -moz-border-radius: 26px;
@@ -442,17 +443,17 @@ nav li a.active:hover {
   width: 50px;
 }
 
-/* line 189, ../sass/extension.scss */
+/* line 190, ../sass/extension.scss */
 .user-card {
   padding: 0 0 10px;
 }
-/* line 192, ../sass/extension.scss */
+/* line 193, ../sass/extension.scss */
 .user-card .profile-image {
   left: 20px;
   position: absolute;
   top: 50px;
 }
-/* line 198, ../sass/extension.scss */
+/* line 199, ../sass/extension.scss */
 .user-card .logout {
   background-color: #fefefe;
   display: inline-block;
@@ -461,25 +462,25 @@ nav li a.active:hover {
   right: 0;
   top: 0;
 }
-/* line 207, ../sass/extension.scss */
+/* line 208, ../sass/extension.scss */
 .user-card .cover_image {
   background-position: 0 50%;
   background-size: cover;
   height: 83px;
   width: 100%;
 }
-/* line 214, ../sass/extension.scss */
+/* line 215, ../sass/extension.scss */
 .user-card .about {
   color: #c3c3c3;
   font-size: 0.9em;
   margin: 5px 0 5px 75px;
 }
-/* line 220, ../sass/extension.scss */
+/* line 221, ../sass/extension.scss */
 .user-card .username {
   color: black;
   font-size: 1.2em;
 }
-/* line 226, ../sass/extension.scss */
+/* line 227, ../sass/extension.scss */
 .user-card .location:before {
   text-indent: -119988px;
   overflow: hidden;
@@ -496,7 +497,7 @@ nav li a.active:hover {
   top: 3px;
 }
 
-/* line 237, ../sass/extension.scss */
+/* line 238, ../sass/extension.scss */
 .box {
   -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
@@ -506,12 +507,12 @@ nav li a.active:hover {
   overflow: hidden;
   position: relative;
 }
-/* line 244, ../sass/extension.scss */
+/* line 245, ../sass/extension.scss */
 .box + .box {
   border-top-width: 0;
 }
 
-/* line 251, ../sass/extension.scss */
+/* line 252, ../sass/extension.scss */
 .thing,
 .collection,
 .event {
@@ -519,7 +520,7 @@ nav li a.active:hover {
   height: 75px;
 }
 
-/* line 259, ../sass/extension.scss */
+/* line 260, ../sass/extension.scss */
 .thing .details,
 .collection .details,
 .event .details {
@@ -527,7 +528,7 @@ nav li a.active:hover {
   padding: 5px 85px 5px 75px;
   width: 100%;
 }
-/* line 264, ../sass/extension.scss */
+/* line 265, ../sass/extension.scss */
 .thing .details .creator,
 .collection .details .creator,
 .event .details .creator {
@@ -536,7 +537,7 @@ nav li a.active:hover {
   left: 0;
   padding: 0 0 5px 75px;
 }
-/* line 271, ../sass/extension.scss */
+/* line 272, ../sass/extension.scss */
 .thing .details .thumbnail,
 .collection .details .thumbnail,
 .event .details .thumbnail {
@@ -545,7 +546,7 @@ nav li a.active:hover {
   right: 0;
   width: 75px;
 }
-/* line 279, ../sass/extension.scss */
+/* line 280, ../sass/extension.scss */
 .thing .profile-image,
 .collection .profile-image,
 .event .profile-image {
@@ -561,36 +562,36 @@ nav li a.active:hover {
   width: 60px;
 }
 
-/* line 290, ../sass/extension.scss */
+/* line 291, ../sass/extension.scss */
 .collections .thumbnail {
   width: 75px;
 }
-/* line 293, ../sass/extension.scss */
+/* line 294, ../sass/extension.scss */
 .collections .thumbnail.shift-1 {
   right: -20px;
 }
-/* line 297, ../sass/extension.scss */
+/* line 298, ../sass/extension.scss */
 .collections .thumbnail.shift-2 {
   right: -40px;
 }
-/* line 301, ../sass/extension.scss */
+/* line 302, ../sass/extension.scss */
 .collections .thumbnail.shift-3 {
   right: -60px;
 }
 
-/* line 308, ../sass/extension.scss */
+/* line 309, ../sass/extension.scss */
 .event .details {
   height: 75px;
   padding: 5px 85px 5px 35px;
   position: absolute;
   top: 0;
 }
-/* line 314, ../sass/extension.scss */
+/* line 315, ../sass/extension.scss */
 .event .details time {
   display: block;
   font-size: 0.9em;
 }
-/* line 325, ../sass/extension.scss */
+/* line 326, ../sass/extension.scss */
 .event.publish .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -601,7 +602,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 325, ../sass/extension.scss */
+/* line 326, ../sass/extension.scss */
 .event.make .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -612,7 +613,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 325, ../sass/extension.scss */
+/* line 326, ../sass/extension.scss */
 .event.feature .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -623,7 +624,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 325, ../sass/extension.scss */
+/* line 326, ../sass/extension.scss */
 .event.like .icon {
   text-indent: -119988px;
   overflow: hidden;
@@ -634,7 +635,7 @@ nav li a.active:hover {
   height: 16px;
   margin: 10px;
 }
-/* line 325, ../sass/extension.scss */
+/* line 326, ../sass/extension.scss */
 .event.follow .icon {
   text-indent: -119988px;
   overflow: hidden;

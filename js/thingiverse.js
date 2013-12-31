@@ -143,10 +143,10 @@ function(config, page, _, MinPubSub) {
 				self.showCollections = self.makeView('collections', self.getCollections, { 'nav': 'collections'});
 				self.showDashboard   = self.makeView('dashboard'  , self.getDashboard,   { 'nav': 'dashboard'});
 				self.showFeatured    = self.makeView('things'     , self.getFeatured,    { 'nav': 'featured'});
-				self.showLikes       = self.makeView('things'     , self.getLikes,       { 'nav': 'likes'      , 'header': 'Likes'});
-				self.showMade        = self.makeView('things'     , self.getMade,        { 'nav': 'made'       , 'header': 'Made'});
-				self.showNewest      = self.makeView('things'     , self.getNewest,      { 'nav': 'newest'     , 'header': 'Newest'});
-				self.showPopular     = self.makeView('things'     , self.getPopular,     { 'nav': 'popular'    , 'header': 'Popular'});
+				self.showLikes       = self.makeView('things'     , self.getLikes,       { 'nav': 'likes'});
+				self.showMade        = self.makeView('things'     , self.getMade,        { 'nav': 'made'});
+				self.showNewest      = self.makeView('things'     , self.getNewest,      { 'nav': 'newest'});
+				self.showPopular     = self.makeView('things'     , self.getPopular,     { 'nav': 'popular'});
 				self.showThings      = self.makeView('things'     , self.getThings,      { 'nav': 'things'});
 				self.showUser        = self.makeView('user'       , self.getUser,        { 'nav': 'user'});
 
@@ -214,7 +214,6 @@ function(config, page, _, MinPubSub) {
 				data.append('password', password);
 
 				ajax('post', config.login_url, data, function (err, response) {
-					console.log(err,response);
 					if (err) {
 						MinpubSub.publish('/thingiverse/error', ['There was a problem logging in']);
 						MinPubSub.publish('/thingiverse/load/done');
@@ -262,7 +261,10 @@ function(config, page, _, MinPubSub) {
 							if (class_name.indexOf('active') === -1) {
 								self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
 							}
+						} else {
+							chrome.tabs.create({url: e.target.href});
 						}
+
 						break;
 				}
 			},
