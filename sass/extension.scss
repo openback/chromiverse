@@ -319,7 +319,7 @@ nav {
 	}
 
 	// Set up our icons
-	$event_types: publish make feature like follow;
+	$event_types: publish make collect feature like follow;
 
 	@each $event_type in $event_types {
 		&.#{$event_type} {

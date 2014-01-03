@@ -38,6 +38,7 @@ function(config, page, _, MinPubSub) {
 		var KNOWN_EVENT_TYPES = [
 			'publish',
 			'make',
+			'collect',
 			'feature'
 		];
 		// How long to cache each API call's data for

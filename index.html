@@ -122,6 +122,20 @@
 				</div>
 			</div>
 		</script>
+		<script id="event-collect-template" type="text/template">
+			<div class="event collect box" data-id="<%= id %>">
+				<span class="icon"></span>
+				<div class="details">
+					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
+					<%= message %>
+					<% if (targets[0].default_image) { %>
+						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+					<% } else { %>
+						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+					<% } %>
+				</div>
+			</div>
+		</script>
 		<script id="event-unknown-template" type="text/template">
 			<div class="event unknown box" data-id="<%= id %>">
 				<%= message %>

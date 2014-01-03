@@ -614,6 +614,17 @@ nav li a.active:hover {
   margin: 10px;
 }
 /* line 326, ../sass/extension.scss */
+.event.collect .icon {
+  text-indent: -119988px;
+  overflow: hidden;
+  text-align: left;
+  background: url('/images/icons-s40944c56e4.png') 0 -783px no-repeat;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 10px;
+}
+/* line 326, ../sass/extension.scss */
 .event.feature .icon {
   text-indent: -119988px;
   overflow: hidden;
