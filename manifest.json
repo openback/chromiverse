@@ -1,9 +1,9 @@
 {
 	"manifest_version": 2,
 
-	"name": "Thingiverse",
+	"name": "Chromiverse",
 	"description": "Keep up to date with all things Thingiverse through Google Chrome.",
-	"version": "1.0",
+	"version": "1.01",
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
 	"author": "Timothy Caraballo",
 	"icons": {
