@@ -56,7 +56,6 @@ function(config, page, _, MinPubSub) {
 		 */
 		var ajax = function(method, path, payload, next) {
 			var req = new XMLHttpRequest();
-			var url;
 
 			if (typeof payload === 'function') {
 				next = payload;
@@ -71,10 +70,6 @@ function(config, page, _, MinPubSub) {
 
 					return;
 				}
-
-				url = config.api_host.concat(path, '?access_token=', access_token);
-			} else {
-				url = path;
 			}
 
 			req.onreadystatechange = function () {
@@ -105,7 +100,8 @@ function(config, page, _, MinPubSub) {
 				payload = (payload.constructor === FormData) ? payload : JSON.stringify(payload);
 			}
 
-			req.open(method, url, true);
+			req.open(method, path, true);
+			req.setRequestHeader('Authorization', 'Bearer ' + access_token);
 			req.send(payload);
 		};
 
@@ -208,13 +204,10 @@ function(config, page, _, MinPubSub) {
 			 */
 			login: function(username, password) {
 				var data = new FormData();
-				data.append('grant_type','password');
-				data.append('client_id', config.client_id);
-				data.append('client_secret', config.client_secret);
 				data.append('username', username);
 				data.append('password', password);
 
-				ajax('post', config.login_url, data, function (err, response) {
+				ajax('post', config.api_host + '/login/oauth/access_token', data, function (err, response) {
 					if (err) {
 						MinpubSub.publish('/thingiverse/error', ['There was a problem logging in']);
 						MinPubSub.publish('/thingiverse/load/done');
@@ -312,7 +305,7 @@ function(config, page, _, MinPubSub) {
 					if (force === true || (Date.now() - storage.last_call_time > API_CACHE_TIME)) {
 						MinPubSub.publish('/thingiverse/load/start', ['Loading...']);
 
-						ajax('get', path, function (err, data) {
+						ajax('get', config.api_host + path, function (err, data) {
 							if (!err) {
 								storage = {
 									last_call_time: Date.now(),
