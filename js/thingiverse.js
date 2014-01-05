@@ -209,7 +209,7 @@ function(config, page, _, MinPubSub) {
 
 				ajax('post', config.api_host + '/login/oauth/access_token', data, function (err, response) {
 					if (err) {
-						MinpubSub.publish('/thingiverse/error', ['There was a problem logging in']);
+						MinPubSub.publish('/thingiverse/error', ['There was a problem logging in']);
 						MinPubSub.publish('/thingiverse/load/done');
 						return;
 					}

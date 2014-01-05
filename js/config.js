@@ -1,5 +1,6 @@
 define({
-	api_host:      'http://localhost:4567',
+//api_host: 'http://localhost:4567',
+	api_host: 'https://chromiverse.herokuapp.com',
 	nav_items: [
 		{ 'class': 'user',        'label': 'Me' },
 		{ 'class': 'dashboard',   'label': 'Dashboard' },
