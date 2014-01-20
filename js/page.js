@@ -130,7 +130,7 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 			 * @param string The single id, class, or tagName to search for
 			 * @return HTMLElement|false The found parent or false
 			 */
-			hasParent: function(el, selector) {
+			getParent: function(el, selector) {
 				var prop = null;
 
 				if (selector.charAt(0) === '#') {

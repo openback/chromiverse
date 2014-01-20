@@ -87,9 +87,9 @@
 					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
-						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].makes_url) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
 					<% } else { %>
-						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].makes_url) %>"><imgsrc="<%= targets[0].thumbnail %>"></a>
 					<% } %>
 				</div>
 			</div>
@@ -101,9 +101,9 @@
 					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
-						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].things_url) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
 					<% } else { %>
-						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].things_url) %>"><img src="<%= targets[0].thumbnail %>"></a>
 					<% } %>
 				</div>
 			</div>
@@ -115,9 +115,9 @@
 					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
-						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].things_url) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
 					<% } else { %>
-						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].things_url) %>"><img src="<%= targets[0].thumbnail %>"></a>
 					<% } %>
 				</div>
 			</div>
@@ -129,9 +129,9 @@
 					<time datetime="<%= time %>"><%= formatTimeAgo(time) %></time>
 					<%= message %>
 					<% if (targets[0].default_image) { %>
-						<a class="thumbnail" href="<%= getImageSize('display', 'large', targets[0].default_image.sizes) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].things_url) %>"><img src="<%= getImageSize('thumb', 'medium', targets[0].default_image.sizes) %>"></a>
 					<% } else { %>
-						<img class="thumbnail" src="<%= targets[0].thumbnail %>">
+						<a class="thumbnail" href="<%= thingsUrlToWeb(targets[0].things_url) %>"><img src="<%= targets[0].thumbnail %>"></a>
 					<% } %>
 				</div>
 			</div>

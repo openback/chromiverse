@@ -4,7 +4,7 @@
 	"name": "Chromiverse",
 	"short_name": "Chromiverse",
 	"description": "Keep up to date with all things Thingiverse through Google Chrome.",
-	"version": "1.1",
+	"version": "1.2",
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
 	"author": "Timothy Caraballo",
 	"icons": {

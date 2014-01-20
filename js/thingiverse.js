@@ -17,7 +17,7 @@ function(config, page, _, MinPubSub) {
 			"10": "feature",
 			"11": "follow",
 			"12": "unfollow",
-			"13": "update",       // Deprecated
+			"13": "complete", // New type?
 			"14": "authorize",
 			"15": "unauthorize",
 			"16": "uncollect",
@@ -39,7 +39,8 @@ function(config, page, _, MinPubSub) {
 			'publish',
 			'make',
 			'collect',
-			'feature'
+			'feature',
+			'complete'
 		];
 		// How long to cache each API call's data for
 		var API_CACHE_TIME = 5 * 60 * 1000;
@@ -153,11 +154,29 @@ function(config, page, _, MinPubSub) {
 
 				// Set up some underscore template helpers
 				_.addTemplateHelpers({
+					thingsUrlToWeb: function(url) {
+						if (typeof url !== 'string') {
+							return null;
+						}
+
+						return url.replace('api.', 'www.').replace('s/', ':');
+					},
+
 					drawEvent: function(event_data) {
 						var event_name = self.getEventName(event_data.type);
-						var template = (KNOWN_EVENT_TYPES.indexOf(event_name) === -1) ?
-							page.getCompiledTemplate('event-unknown') :
-							page.getCompiledTemplate('event-' + event_name);
+						var template = page.getCompiledTemplate('event-unknown');
+
+						if (KNOWN_EVENT_TYPES.indexOf(event_name) !== -1) {
+							if (event_name === 'complete') {
+								// Remap the event
+								event_name = 'publish';
+							}
+
+							if (event_name === 'make') { console.log(event_data); }
+
+							template = page.getCompiledTemplate('event-' + event_name);
+						}
+
 						return template(event_data);
 					},
 					
@@ -241,25 +260,30 @@ function(config, page, _, MinPubSub) {
 			},
 
 			content_click_listener: function (e) {
-				switch (e.target.tagName) {
-					case 'A':
-						if (e.target.className === 'logout') {
-							e.preventDefault();
+				var el = e.target;
 
-							self.logout();
-						} else if (page.hasParent(e.target, 'nav')) {
-							var class_name = e.target.className;
+				if (el.tagName !== 'A') {
+					el = page.getParent(el, 'A');
 
-							e.preventDefault();
+					if (el === false) {
+						return;
+					}
+				}
 
-							if (class_name.indexOf('active') === -1) {
-								self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
-							}
-						} else {
-							chrome.tabs.create({url: e.target.href});
-						}
+				if (el.className === 'logout') {
+					e.preventDefault();
 
-						break;
+					self.logout();
+				} else if (page.getParent(el, 'nav') !== false) {
+					var class_name = el.className;
+
+					e.preventDefault();
+
+					if (class_name.indexOf('active') === -1) {
+						self['show' + class_name.charAt(0).toUpperCase() + class_name.slice(1)]();
+					}
+				} else {
+					chrome.tabs.create({url: el.href});
 				}
 			},
 
