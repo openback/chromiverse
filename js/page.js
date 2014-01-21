@@ -41,7 +41,7 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 
 			showLoading: function(message) {
 				loading_screen_text.innerHTML = (message) ? message: '';
-				self.addClass(loading_screen, 'show');
+				loading_screen.classList.add('show');
 				self.hideError();
 				loading_shown_at = Date.now();
 			},
@@ -52,7 +52,7 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 				if (t - loading_shown_at < LOADING_DISP_MIN_TIME) {
 					setTimeout(self.hideLoading, LOADING_DISP_MIN_TIME - (t - loading_shown_at));
 				} else {
-					self.removeClass(loading_screen, 'show');
+					loading_screen.classList.remove('show');
 				}
 			},
 
@@ -153,17 +153,6 @@ define(['underscore', 'minpubsub', 'config'], function (_, MinPubSub, config) {
 				}
 
 				return false;
-			},
-
-			addClass: function(el, class_name) {
-				var classes = el.className.split(' ');
-				classes.push(class_name);
-				el.className = _.uniq(classes).join(' ').trim();
-			},
-
-			removeClass: function(el, class_name) {
-				var classes = el.className.split(' ');
-				el.className = _.without(classes, class_name).join(' ').trim();
 			}
 		};
 
